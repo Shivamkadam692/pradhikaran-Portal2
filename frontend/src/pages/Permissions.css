@@ -1,0 +1,125 @@
+.permissions-page {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.permissions-card {
+  border-radius: var(--radius, 12px);
+}
+
+.permissions-card-title {
+  font-size: 1.125rem;
+  margin-bottom: 1rem;
+}
+
+.permissions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.permissions-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+}
+
+.permissions-item-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+}
+
+.permissions-item-name {
+  font-weight: 600;
+}
+
+.permissions-item-email {
+  color: var(--page-text-muted, #64748b);
+  font-size: 0.9375rem;
+}
+
+.permissions-item-dept {
+  font-size: 0.75rem;
+}
+
+.badge-pending {
+  background: rgba(245, 158, 11, 0.2);
+  color: #b45309;
+  font-size: 0.75rem;
+}
+
+.permissions-item-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.permissions-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.permissions-modal {
+  width: 100%;
+  max-width: 480px;
+  padding: 1.5rem;
+  border-radius: var(--radius, 12px);
+}
+
+.permissions-modal h3 {
+  margin-bottom: 0.5rem;
+}
+
+.permissions-modal .text-muted {
+  margin-bottom: 1rem;
+  font-size: 0.9375rem;
+}
+
+.permissions-modal-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.permissions-modal-textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--page-border, #e2e8f0);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  resize: vertical;
+  min-height: 100px;
+}
+
+.permissions-modal .required-asterisk {
+  color: #dc2626;
+}
+
+.permissions-modal .form-actions {
+  margin-top: 1rem;
+}
+
+@media (max-width: 640px) {
+  .permissions-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .permissions-item-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

@@ -1,0 +1,124 @@
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import DepartmentSelect from '../components/DepartmentSelect';
+import './Auth.css';
+
+export default function DepartmentRegister() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [departmentName, setDepartmentName] = useState('');
+  const [departmentError, setDepartmentError] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { register, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) navigate('/', { replace: true });
+  }, [isAuthenticated, navigate]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setDepartmentError('');
+    if (!departmentName || departmentName.trim() === '') {
+      setDepartmentError('Please select a department');
+      return;
+    }
+    setLoading(true);
+    try {
+      await register(name, email, password, departmentName);
+      setSuccess(true);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (success) {
+    return (
+      <div className="auth-page">
+        <div className="auth-card glass card-hover">
+          <Link to="/auth" className="auth-back">← Back to role selection</Link>
+          <h1 className="auth-title">Registration submitted</h1>
+          <p className="auth-subtitle">You can sign in after your account is approved by a Pradhikaran administrator.</p>
+          <Link to="/auth/department/login" className="btn btn-primary">Go to Sign In</Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="auth-page">
+      <div className="auth-card glass card-hover">
+        <Link to="/auth" className="auth-back">← Back to role selection</Link>
+        <h1 className="auth-title">Department Registration</h1>
+        <p className="auth-subtitle">Register to participate. Your account must be approved by a Pradhikaran administrator before you can sign in.</p>
+        <form onSubmit={handleSubmit} className="auth-form">
+          {error && <div className="auth-error" role="alert">{error}</div>}
+          <label htmlFor="dept-reg-name">
+            Name
+            <input
+              id="dept-reg-name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your name"
+              required
+              autoComplete="name"
+              autoFocus
+            />
+          </label>
+          <label htmlFor="dept-reg-email">
+            Email
+            <input
+              id="dept-reg-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              required
+              autoComplete="email"
+            />
+          </label>
+          <div className="auth-form-field">
+            <DepartmentSelect
+              id="dept-reg-dept"
+              label="Department"
+              value={departmentName}
+              onChange={(val) => {
+                setDepartmentName(val);
+                setDepartmentError('');
+              }}
+              required
+              error={departmentError}
+            />
+          </div>
+          <label htmlFor="dept-reg-password">
+            Password
+            <input
+              id="dept-reg-password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Min 8 characters"
+              required
+              minLength={8}
+              autoComplete="new-password"
+            />
+          </label>
+          <button type="submit" className="btn btn-primary" disabled={loading}>
+            {loading ? 'Submitting...' : 'Register'}
+          </button>
+        </form>
+        <p className="auth-footer">
+          Already have an account? <Link to="/auth/department/login">Sign in</Link>
+        </p>
+      </div>
+    </div>
+  );
+}
