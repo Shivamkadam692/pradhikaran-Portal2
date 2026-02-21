@@ -1,4 +1,33 @@
 const PDFDocument = require('pdfkit');
+const fs = require('fs');
+const os = require('os');
+
+const findDevanagariFont = () => {
+  const platform = os.platform();
+  const candidates = [];
+  if (platform === 'win32') {
+    candidates.push(
+      'C:\\\\Windows\\\\Fonts\\\\Nirmala.ttf',
+      'C:\\\\Windows\\\\Fonts\\\\NirmalaUI.ttf',
+      'C:\\\\Windows\\\\Fonts\\\\Mangal.ttf'
+    );
+  } else if (platform === 'linux') {
+    candidates.push(
+      '/usr/share/fonts/truetype/noto/NotoSansDevanagari-Regular.ttf',
+      '/usr/share/fonts/truetype/lohit-devanagari/Lohit-Devanagari.ttf'
+    );
+  } else if (platform === 'darwin') {
+    candidates.push(
+      '/Library/Fonts/NotoSansDevanagari-Regular.ttf'
+    );
+  }
+  for (const p of candidates) {
+    try {
+      if (fs.existsSync(p)) return p;
+    } catch (_) {}
+  }
+  return null;
+};
 const { Question, Answer, User } = require('../models');
 
 const buildQuestionPdf = async (questionId) => {
@@ -21,6 +50,10 @@ const buildQuestionPdf = async (questionId) => {
 
   return new Promise((resolve, reject) => {
     const doc = new PDFDocument({ margin: 50 });
+    const fontPath = findDevanagariFont();
+    if (fontPath) {
+      doc.font(fontPath);
+    }
     const chunks = [];
     doc.on('data', (chunk) => chunks.push(chunk));
     doc.on('end', () => resolve(Buffer.concat(chunks)));
@@ -79,6 +112,10 @@ const buildDepartmentPdf = async (userId) => {
 
   return new Promise((resolve, reject) => {
     const doc = new PDFDocument({ margin: 50 });
+    const fontPath = findDevanagariFont();
+    if (fontPath) {
+      doc.font(fontPath);
+    }
     const chunks = [];
     doc.on('data', (chunk) => chunks.push(chunk));
     doc.on('end', () => resolve(Buffer.concat(chunks)));

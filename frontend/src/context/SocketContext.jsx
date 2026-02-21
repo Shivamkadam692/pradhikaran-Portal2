@@ -20,7 +20,8 @@ export function SocketProvider({ children }) {
     }
     const token = getAccessToken();
     if (!token) return;
-    const s = io(window.location.origin, {
+    const apiOrigin = import.meta.env.VITE_API_ORIGIN || 'http://localhost:5000';
+    const s = io(apiOrigin, {
       path: '/socket.io',
       auth: { token },
       transports: ['websocket', 'polling'],

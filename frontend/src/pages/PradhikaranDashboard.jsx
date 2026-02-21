@@ -5,6 +5,7 @@ import DepartmentSelect from '../components/DepartmentSelect';
 import History from './History';
 import Permissions from './Permissions';
 import './Dashboard.css';
+import DepartmentsOverview from './DepartmentsOverview';
 
 function QuestionList() {
   const [questions, setQuestions] = useState([]);
@@ -80,6 +81,9 @@ function QuestionList() {
         <div className="dashboard-actions">
           <button type="button" className="btn btn-primary" onClick={() => setShowCreate(true)}>
             Create Question
+          </button>
+          <button type="button" className="btn btn-outline" onClick={() => navigate('/pradhikaran/departments')}>
+            Departments
           </button>
         </div>
       </div>
@@ -312,6 +316,7 @@ export default function PradhikaranDashboard() {
   return (
     <Routes>
       <Route index element={<QuestionList />} />
+      <Route path="departments" element={<DepartmentsOverview />} />
       <Route path="history" element={<History />} />
       <Route path="permissions" element={<Permissions />} />
       <Route path="senate-inbox" element={<SenateInbox />} />

@@ -142,6 +142,16 @@ const getById = async (id) => {
     .lean();
 };
 
+const listByDepartment = async (departmentId) => {
+  return Answer.find({
+    department: departmentId,
+    isDeleted: { $ne: true },
+  })
+    .populate('question', 'title status createdAt')
+    .sort({ createdAt: -1 })
+    .lean();
+};
+
 // Function to add attachments to an answer
 const addAttachments = async (answerId, departmentId, attachments) => {
   const answer = await Answer.findOne({
@@ -166,5 +176,6 @@ module.exports = {
   listByQuestion,
   getByQuestionAndDepartment,
   getById,
+  listByDepartment,
   addAttachments,
 };

@@ -58,4 +58,10 @@ router.post(
   answerController.setStatus
 );
 
+router.get(
+  '/department/:departmentId',
+  authorizeRoles(ROLES.PRADHIKARAN),
+  answerController.listByDepartment
+);
+
 module.exports = router;

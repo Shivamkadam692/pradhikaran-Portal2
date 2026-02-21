@@ -113,10 +113,20 @@ const getByQuestion = async (req, res, next) => {
   }
 };
 
+const listByDepartment = async (req, res, next) => {
+  try {
+    const answers = await answerService.listByDepartment(req.params.departmentId);
+    res.json({ success: true, data: answers });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   submit,
   updateContent,
   setStatus,
   getOne,
   getByQuestion,
+  listByDepartment,
 };

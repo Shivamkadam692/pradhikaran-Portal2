@@ -43,15 +43,6 @@ export default function PradhikaranQuestionDetail() {
     load();
   }, [id]);
 
-  const handleLock = async () => {
-    try {
-      await api.post(`/questions/${id}/lock`);
-      load();
-    } catch (e) {
-      setError(e.response?.data?.message || 'Failed');
-    }
-  };
-
   const handleDelete = async () => {
     if (!window.confirm('Are you sure you want to delete this question? This action cannot be undone.')) return;
     try {
@@ -155,9 +146,6 @@ export default function PradhikaranQuestionDetail() {
           </button>
           {canEdit && (
             <>
-              <button type="button" className="btn btn-secondary" onClick={handleLock}>
-                Lock Question
-              </button>
               {canFinalize && (
                 <button type="button" className="btn btn-primary" onClick={() => navigate(`/pradhikaran/finalize/${id}`)}>
                   Finalize Question
