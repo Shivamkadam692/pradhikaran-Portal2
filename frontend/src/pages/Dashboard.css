@@ -239,3 +239,56 @@
   background: var(--page-border, #e2e8f0);
   margin-top: 1rem;
 }
+
+/* Question index styling */
+.question-index {
+  display: inline-block;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--page-text, #1e293b);
+  background: #eef2ff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 0.125rem 0.5rem;
+  margin-right: 0.5rem;
+}
+
+/* Department details page styling */
+.header-actions {
+  margin-bottom: 1rem;
+}
+
+.department-info {
+  margin-top: 1rem;
+}
+
+.department-info p {
+  margin-bottom: 0.5rem;
+}
+
+.questions-list .question-item {
+  border-radius: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.questions-list .question-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.question-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.answer-meta {
+  margin-top: 0.5rem;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.ms-2 {
+  margin-left: 0.5rem;
+}

@@ -18,6 +18,13 @@ A production-ready MERN stack application for **research governance and collabor
 - **Cron**: Auto-lock questions when deadline passes
 - **Analytics**: Aggregation pipeline metrics for dashboards
 
+## Recent Changes
+
+- Marathi (Devanagari) Unicode rendering in PDF exports via PDFKit. System font detection for Nirmala UI/Mangal (Windows) and Noto/Lohit (Linux/macOS). For consistent results, bundle a Devanagari TTF (e.g., NotoSansDevanagari-Regular.ttf) and point PDFKit to it.
+- Removed manual "Lock Question" button from Pradhikaran UI. Auto-lock via cron continues based on deadlines.
+- New Pradhikaran section: Departments overview at `/pradhikaran/departments` listing all departments and questions answered by each.
+- Socket.IO client supports direct backend connection via `VITE_API_ORIGIN` (falls back to dev proxy). Use this if ws proxy issues occur.
+
 ## Roles (summary)
 
 | Role            | Key capabilities |
@@ -54,7 +61,13 @@ npm run dev    # runs on http://localhost:5000
 ```bash
 cd frontend
 npm install
-npm run dev    # runs on http://localhost:3000, proxies /api and Socket.io to backend
+npm run dev    # runs on http://localhost:3000, proxies /api and /socket.io to backend
+```
+
+Optional: create `.env` in `frontend` to set direct backend URL for Socket.IO and API:
+
+```
+VITE_API_ORIGIN=http://localhost:5000
 ```
 
 ### 3. Super Admin access
@@ -82,6 +95,7 @@ npm run dev    # runs on http://localhost:3000, proxies /api and Socket.io to ba
 - **Users:** `GET/POST /api/users/pradhikaran` (Super Admin), `GET /api/users/departments`, `GET /api/users/pending-registrations` (Pradhikaran), `POST /api/users/:userId/approve` (Pradhikaran), `POST /api/users/:userId/reject` (Pradhikaran, body: `{ reason }`)
 - **Questions:** `GET/POST /api/questions`, `GET/PUT/DELETE /api/questions/:id`, `POST /api/questions/:id/lock`, `GET /api/questions/:id/answers`, `POST /api/questions/:id/finalize`
 - **Answers:** `POST /api/answers`, `GET /api/answers/question/:questionId`, `PUT /api/answers/:id`, `POST /api/answers/:id/status`
+- **Answers (Pradhikaran):** `GET /api/answers/department/:departmentId` — list answers for a department (includes populated question summary)
 - **Analytics:** `GET /api/analytics`
 - **Activity logs:** `GET /api/activity-logs` (Super Admin), `GET /api/activity-logs/mine` (Pradhikaran, Department; query: page, limit, keyword, dateFrom, dateTo, action, status), `GET /api/activity-logs/mine/export?format=csv|json`
 - **Export:** `GET /api/export/question/:id`, `GET /api/export/department/:userId`
@@ -99,6 +113,12 @@ npm run dev    # runs on http://localhost:3000, proxies /api and Socket.io to ba
 ```bash
 cd backend
 npm test
+```
+
+If PowerShell blocks `npm` scripts (Execution Policy), run:
+
+```bash
+node ./node_modules/jest/bin/jest.js --coverage --forceExit
 ```
 
 ## License

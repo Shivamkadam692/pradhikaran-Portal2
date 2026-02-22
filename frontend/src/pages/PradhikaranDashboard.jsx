@@ -6,6 +6,7 @@ import History from './History';
 import Permissions from './Permissions';
 import './Dashboard.css';
 import DepartmentsOverview from './DepartmentsOverview';
+import DepartmentDetails from './DepartmentDetails';
 
 function QuestionList() {
   const [questions, setQuestions] = useState([]);
@@ -139,13 +140,16 @@ function QuestionList() {
         </div>
       )}
       <div className="card-grid">
-        {questions.map((q) => (
+        {questions.map((q, idx) => (
           <div
             key={q._id}
             className="glass card card-hover"
             onClick={() => navigate(`/pradhikaran/question/${q._id}`)}
           >
-            <h4>{q.title}</h4>
+            <div className="d-flex align-items-center">
+              <span className="question-index">Q{idx + 1}</span>
+              <h4>{q.title}</h4>
+            </div>
             <p className="text-muted">{q.description?.slice(0, 100)}...</p>
             <span className={`badge badge-${q.status}`}>{q.status}</span>
             <span className="meta">
@@ -257,9 +261,9 @@ function SenateInbox() {
                 value={selectedId}
                 onChange={(e) => setSelectedId(e.target.value)}
               >
-                {questions.map((q) => (
+                {questions.map((q, idx) => (
                   <option key={q._id} value={q._id}>
-                    {q.title}
+                    Q{idx + 1}: {q.title}
                   </option>
                 ))}
               </select>
@@ -317,6 +321,7 @@ export default function PradhikaranDashboard() {
     <Routes>
       <Route index element={<QuestionList />} />
       <Route path="departments" element={<DepartmentsOverview />} />
+      <Route path="departments/:id" element={<DepartmentDetails />} />
       <Route path="history" element={<History />} />
       <Route path="permissions" element={<Permissions />} />
       <Route path="senate-inbox" element={<SenateInbox />} />

@@ -124,9 +124,9 @@ export default function AllReceivedAnswers() {
                 value={selectedQuestion?._id || ''}
                 onChange={handleQuestionChange}
               >
-                {questions.map((question) => (
+                {questions.map((question, idx) => (
                   <option key={question._id} value={question._id}>
-                    {question.title}
+                    Q{idx + 1}: {question.title}
                   </option>
                 ))}
               </select>
@@ -136,7 +136,7 @@ export default function AllReceivedAnswers() {
               <div className="glass p-3">
                 <h3>Question Details</h3>
                 <div className="mb-2">
-                  <strong>Title:</strong> {selectedQuestion.title}
+                  <strong>Title:</strong> <span className="question-index">Q{questions.findIndex(q => q._id === selectedQuestion._id) + 1}</span> {selectedQuestion.title}
                 </div>
                 <div className="mb-2">
                   <strong>Description:</strong> {selectedQuestion.description}

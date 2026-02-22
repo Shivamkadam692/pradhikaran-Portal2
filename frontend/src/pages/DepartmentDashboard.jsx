@@ -46,13 +46,16 @@ function DepartmentHome() {
       </div>
       <p className="text-muted mb-4">Click a question to view details and submit your answer.</p>
       <div className="card-grid">
-        {questions.map((q) => (
+        {questions.map((q, idx) => (
           <div
             key={q._id}
             className="glass card card-hover"
             onClick={() => navigate(`/question/${q._id}`)}
           >
-            <h4>{q.title}</h4>
+            <div className="d-flex align-items-center">
+              <span className="question-index">Q{idx + 1}</span>
+              <h4>{q.title}</h4>
+            </div>
             <p className="text-muted">{q.description?.slice(0, 120)}...</p>
             <span className={`badge badge-${q.status}`}>{q.status}</span>
           </div>
