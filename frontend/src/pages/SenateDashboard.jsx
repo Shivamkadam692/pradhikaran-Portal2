@@ -145,6 +145,9 @@ export default function SenateDashboard() {
               <span className="meta">
                 Department: {q.department?.departmentName || q.department?.name || 'Not assigned yet'}
               </span>
+              <span className="meta ms-2">
+                Created: {q.createdAt ? new Date(q.createdAt).toLocaleString() : '—'}
+              </span>
             </div>
             {q.status === 'finalized' && q.finalAnswer && (
               <div className="senate-final-answer">

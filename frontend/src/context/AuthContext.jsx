@@ -100,6 +100,7 @@ export function AuthProvider({ children }) {
     isPradhikaran: user?.role === 'PRADHIKARAN',
     isDepartment: user?.role === 'DEPARTMENT',
     isSenate: user?.role === 'SENATE',
+    isAuditor: user?.role === 'AUDITOR',
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

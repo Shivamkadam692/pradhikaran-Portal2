@@ -14,13 +14,13 @@ router.get(
 
 router.get(
   '/mine',
-  authorizeRoles(ROLES.PRADHIKARAN, ROLES.DEPARTMENT),
+  authorizeRoles(ROLES.PRADHIKARAN, ROLES.DEPARTMENT, ROLES.AUDITOR),
   activityLogController.listMine
 );
 
 router.get(
   '/mine/export',
-  authorizeRoles(ROLES.PRADHIKARAN, ROLES.DEPARTMENT),
+  authorizeRoles(ROLES.PRADHIKARAN, ROLES.DEPARTMENT, ROLES.AUDITOR),
   activityLogController.exportMine
 );
 

@@ -93,6 +93,20 @@ export default function RoleSelect() {
             <p className="role-card__desc">Initiate questions to Pradhikaran and departments. Credentials are created by Super Admin only.</p>
             <span className="role-card__cta">Sign in →</span>
           </Link>
+
+          <Link
+            to="/auth/auditor/login"
+            className="role-card"
+            role="listitem"
+            aria-label="Continue as Auditor (Reviewer)"
+          >
+            <span className="role-card__icon-wrap role-card__icon-wrap--department">
+              <DepartmentIcon />
+            </span>
+            <h2 className="role-card__title">Auditor</h2>
+            <p className="role-card__desc">Review Senate questions and forward selectively to Pradhikaran. Credentials are created by Super Admin.</p>
+            <span className="role-card__cta">Sign in →</span>
+          </Link>
         </div>
 
         <p className="role-select__admin-hint">

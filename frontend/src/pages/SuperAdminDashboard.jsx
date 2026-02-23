@@ -9,6 +9,9 @@ export default function SuperAdminDashboard() {
   const [pradhikaran, setPradhikaran] = useState([]);
   const [senate, setSenate] = useState([]);
   const [questions, setQuestions] = useState([]);
+  const [auditors, setAuditors] = useState([]);
+  const [createAuditorOpen, setCreateAuditorOpen] = useState(false);
+  const [auditorForm, setAuditorForm] = useState({ name: '', email: '', password: '' });
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -20,17 +23,19 @@ export default function SuperAdminDashboard() {
 
   const load = async () => {
     try {
-      const [aRes, prRes, sRes, qRes, lRes] = await Promise.all([
+      const [aRes, prRes, sRes, qRes, lRes, auRes] = await Promise.all([
         superAdminApi.get('/analytics').catch(() => ({ success: true, data: {} })),
         superAdminApi.get('/users/pradhikaran').catch(() => ({ success: true, data: [] })),
         superAdminApi.get('/users/senate').catch(() => ({ success: true, data: [] })),
         superAdminApi.get('/questions/all').catch(() => ({ success: true, data: [] })),
         superAdminApi.get('/activity-logs?limit=30').catch(() => ({ success: true, data: { logs: [] } })),
+        superAdminApi.get('/users/auditor').catch(() => ({ success: true, data: [] })),
       ]);
       setAnalytics(aRes?.data || {});
       setPradhikaran(Array.isArray(prRes?.data) ? prRes.data : []);
       setSenate(Array.isArray(sRes?.data) ? sRes.data : []);
       setQuestions(Array.isArray(qRes?.data) ? qRes.data : []);
+      setAuditors(Array.isArray(auRes?.data) ? auRes.data : []);
       setLogs(Array.isArray(lRes?.data?.logs) ? lRes.data.logs : []);
     } catch (e) {
       setError(e.response?.data?.message || 'Failed to load');
@@ -67,6 +72,22 @@ export default function SuperAdminDashboard() {
       await superAdminApi.post('/users/senate', senateForm);
       setCreateSenateOpen(false);
       setSenateForm({ name: '', email: '', password: '' });
+      load();
+    } catch (e) {
+      setError(e.response?.data?.message || 'Failed');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleCreateAuditor = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setError('');
+    try {
+      await superAdminApi.post('/users/auditor', auditorForm);
+      setCreateAuditorOpen(false);
+      setAuditorForm({ name: '', email: '', password: '' });
       load();
     } catch (e) {
       setError(e.response?.data?.message || 'Failed');
@@ -190,6 +211,48 @@ export default function SuperAdminDashboard() {
             ))}
           </ul>
         </div>
+      </div>
+
+      <div className="glass p-4 mb-4">
+        <div className="section-header">
+          <h3>Auditor Accounts</h3>
+          <button type="button" className="btn btn-primary small" onClick={() => setCreateAuditorOpen(true)}>
+            Create
+          </button>
+        </div>
+        {createAuditorOpen && (
+          <form onSubmit={handleCreateAuditor} className="mb-4">
+            <input
+              placeholder="Name"
+              value={auditorForm.name}
+              onChange={(e) => setAuditorForm((f) => ({ ...f, name: e.target.value }))}
+              required
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              value={auditorForm.email}
+              onChange={(e) => setAuditorForm((f) => ({ ...f, email: e.target.value }))}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={auditorForm.password}
+              onChange={(e) => setAuditorForm((f) => ({ ...f, password: e.target.value }))}
+              required
+            />
+            <div className="form-actions">
+              <button type="button" className="btn btn-secondary" onClick={() => setCreateAuditorOpen(false)}>Cancel</button>
+              <button type="submit" className="btn btn-primary" disabled={submitting}>Create</button>
+            </div>
+          </form>
+        )}
+        <ul className="list-unstyled">
+          {auditors.map((u) => (
+            <li key={u._id}>{u.name} – {u.email}</li>
+          ))}
+        </ul>
       </div>
 
       <div className="glass p-4 mb-4">

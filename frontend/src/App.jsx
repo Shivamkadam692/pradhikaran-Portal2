@@ -20,6 +20,8 @@ import FinalizeQuestion from './pages/FinalizeQuestion';
 import SenateLogin from './pages/SenateLogin';
 import SenateDashboard from './pages/SenateDashboard';
 import SenateQuestionDetail from './pages/SenateQuestionDetail';
+import AuditorLogin from './pages/AuditorLogin';
+import AuditorDashboard from './pages/AuditorDashboard';
 
 function PrivateRoute({ children, allowedRoles }) {
   const { isAuthenticated, loading, user } = useAuth();
@@ -38,6 +40,7 @@ function AppRoutes() {
       <Route path="/auth/department/login" element={<DepartmentLogin />} />
       <Route path="/auth/department/register" element={<DepartmentRegister />} />
       <Route path="/auth/senate/login" element={<SenateLogin />} />
+      <Route path="/auth/auditor/login" element={<AuditorLogin />} />
       <Route path="/login" element={<Navigate to="/auth" replace />} />
       <Route path="/register" element={<Navigate to="/auth" replace />} />
       <Route
@@ -95,6 +98,14 @@ function AppRoutes() {
           element={
             <PrivateRoute allowedRoles={['SENATE']}>
               <SenateDashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="auditor/*"
+          element={
+            <PrivateRoute allowedRoles={['AUDITOR']}>
+              <AuditorDashboard />
             </PrivateRoute>
           }
         />

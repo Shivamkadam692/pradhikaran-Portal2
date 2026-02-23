@@ -111,6 +111,50 @@ const createSenate = async (req, res, next) => {
   }
 };
 
+const listAuditors = async (req, res, next) => {
+  try {
+    const users = await User.find({
+      role: ROLES.AUDITOR,
+      isDeleted: { $ne: true },
+    })
+      .select('-password')
+      .sort({ createdAt: -1 })
+      .lean();
+    res.json({ success: true, data: users });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const createAuditor = async (req, res, next) => {
+  try {
+    const { name, email, password } = req.body;
+    const existing = await User.findOne({ email, isDeleted: { $ne: true } });
+    if (existing) {
+      return res.status(400).json({ success: false, message: 'Email already exists' });
+    }
+    const user = new User({
+      name,
+      email,
+      password,
+      role: ROLES.AUDITOR,
+      isApproved: true,
+    });
+    await user.save();
+    if (req.user?._id) {
+      try {
+        await activityLogService.logUserCreated(req.user._id, user._id, { email: user.email, role: ROLES.AUDITOR });
+      } catch (logErr) {
+        console.error('Failed to log user creation:', logErr);
+      }
+    }
+    const userResponse = await User.findById(user._id).select('-password').lean();
+    res.status(201).json({ success: true, data: userResponse });
+  } catch (err) {
+    next(err);
+  }
+};
+
 const approveDepartment = async (req, res, next) => {
   try {
     const user = await User.findOne({
@@ -219,4 +263,6 @@ module.exports = {
   listPendingRegistrations,
   listSenate,
   createSenate,
+  listAuditors,
+  createAuditor,
 };

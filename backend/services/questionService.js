@@ -29,6 +29,7 @@ const createFromSenate = async (data, userId) => {
     description: data.description,
     createdBy: userId,
     status: QUESTION_STATUS.OPEN,
+    auditStatus: 'pending',
     priority: data.priority || 'medium',
     tags: data.tags || [],
     deadline: data.deadline,
@@ -255,6 +256,7 @@ const listSenateInboxForPradhikaran = async () => {
     createdBy: { $in: senateIds },
     isDeleted: { $ne: true },
     ownerPradhikaran: { $exists: false },
+    auditStatus: 'forwarded',
   })
     .populate('createdBy', 'name email role')
     .sort({ createdAt: -1 })

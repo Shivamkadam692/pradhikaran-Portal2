@@ -21,10 +21,18 @@ const createSenateValidation = [
   body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters'),
 ];
 
+const createAuditorValidation = [
+  body('name').trim().notEmpty().withMessage('Name required'),
+  body('email').isEmail().normalizeEmail().withMessage('Valid email required'),
+  body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters'),
+];
+
 router.get('/users/pradhikaran', userController.listPradhikaran);
 router.post('/users/pradhikaran', createPradhikaranValidation, validate, userController.createPradhikaran);
 router.get('/users/senate', userController.listSenate);
 router.post('/users/senate', createSenateValidation, validate, userController.createSenate);
+router.get('/users/auditor', userController.listAuditors);
+router.post('/users/auditor', createAuditorValidation, validate, userController.createAuditor);
 router.get('/users/pending-registrations', userController.listPendingRegistrations);
 router.post('/users/:userId/approve', userController.approveDepartment);
 router.get('/questions/all', questionController.listAll);

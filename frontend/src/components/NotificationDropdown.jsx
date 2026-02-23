@@ -51,6 +51,10 @@ export default function NotificationDropdown() {
                   {n.event === 'senateQuestionCreated' && 'New senate question created'}
                   {n.event === 'questionAssigned' && 'Question assigned to your department'}
                   {n.event === 'questionClassified' && 'Senate question classified by Pradhikaran'}
+                  {n.event === 'auditQuestionApproved' && 'Auditor approved a Senate question'}
+                  {n.event === 'auditQuestionRejected' && (n.reason ? `Auditor rejected: ${n.reason.slice(0, 50)}${n.reason.length > 50 ? '…' : ''}` : 'Auditor rejected a question')}
+                  {n.event === 'auditQuestionResubmitted' && 'Draft resubmitted for audit'}
+                  {n.event === 'auditQuestionForwarded' && 'Auditor forwarded question to Pradhikaran'}
                   {n.event === 'senateFinalAnswerAvailable' && (
                     <>
                       Final answer available —{' '}

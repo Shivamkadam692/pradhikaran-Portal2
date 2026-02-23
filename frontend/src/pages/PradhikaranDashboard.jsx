@@ -155,6 +155,7 @@ function QuestionList() {
             <span className="meta">
               Dept: {q.department?.departmentName || q.department?.name || q.department}
             </span>
+            <span className="meta">Created: {q.createdAt ? new Date(q.createdAt).toLocaleString() : '—'}</span>
           </div>
         ))}
       </div>
@@ -263,7 +264,7 @@ function SenateInbox() {
               >
                 {questions.map((q, idx) => (
                   <option key={q._id} value={q._id}>
-                    Q{idx + 1}: {q.title}
+                    Q{idx + 1}: {q.title} — {q.createdAt ? new Date(q.createdAt).toLocaleString() : '—'}
                   </option>
                 ))}
               </select>

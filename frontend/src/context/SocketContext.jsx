@@ -36,6 +36,10 @@ export function SocketProvider({ children }) {
     s.on('questionAssigned', (data) => setLastEvent({ event: 'questionAssigned', ...data }));
     s.on('questionClassified', (data) => setLastEvent({ event: 'questionClassified', ...data }));
     s.on('senateFinalAnswerAvailable', (data) => setLastEvent({ event: 'senateFinalAnswerAvailable', ...data }));
+    s.on('auditQuestionApproved', (data) => setLastEvent({ event: 'auditQuestionApproved', ...data }));
+    s.on('auditQuestionRejected', (data) => setLastEvent({ event: 'auditQuestionRejected', ...data }));
+    s.on('auditQuestionResubmitted', (data) => setLastEvent({ event: 'auditQuestionResubmitted', ...data }));
+    s.on('auditQuestionForwarded', (data) => setLastEvent({ event: 'auditQuestionForwarded', ...data }));
     setSocket(s);
     return () => {
       s.disconnect();

@@ -18,6 +18,7 @@ export default function Layout() {
   const isPradhikaran = user?.role === 'PRADHIKARAN';
   const isDepartment = user?.role === 'DEPARTMENT';
   const isSenate = user?.role === 'SENATE';
+  const isAuditor = user?.role === 'AUDITOR';
 
   return (
     <div className="layout">
@@ -66,6 +67,13 @@ export default function Layout() {
             <>
               <NavLink to="/super-admin" end className={({ isActive }) => (isActive ? 'active' : '')}>
                 Super Admin
+              </NavLink>
+            </>
+          )}
+          {isAuditor && (
+            <>
+              <NavLink to="/auditor" end className={({ isActive }) => (isActive ? 'active' : '')}>
+                Auditor
               </NavLink>
             </>
           )}

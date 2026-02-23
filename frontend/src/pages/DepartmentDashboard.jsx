@@ -58,6 +58,7 @@ function DepartmentHome() {
             </div>
             <p className="text-muted">{q.description?.slice(0, 120)}...</p>
             <span className={`badge badge-${q.status}`}>{q.status}</span>
+            <span className="meta">Created: {q.createdAt ? new Date(q.createdAt).toLocaleString() : '—'}</span>
           </div>
         ))}
       </div>

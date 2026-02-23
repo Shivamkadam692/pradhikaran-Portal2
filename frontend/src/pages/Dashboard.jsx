@@ -12,6 +12,7 @@ export default function Dashboard() {
     else if (user?.role === 'PRADHIKARAN') navigate('/pradhikaran', { replace: true });
     else if (user?.role === 'DEPARTMENT') navigate('/department', { replace: true });
     else if (user?.role === 'SENATE') navigate('/senate', { replace: true });
+    else if (user?.role === 'AUDITOR') navigate('/auditor', { replace: true });
     else navigate('/login', { replace: true });
   }, [user, loading, navigate]);
 

@@ -3,6 +3,7 @@ const ROLES = {
   PRADHIKARAN: 'PRADHIKARAN',
   DEPARTMENT: 'DEPARTMENT',
   SENATE: 'SENATE',
+  AUDITOR: 'AUDITOR',
 };
 
 const QUESTION_STATUS = {
@@ -49,6 +50,10 @@ const ACTIVITY_ACTIONS = {
   REGISTRATION_APPROVED: 'registration_approved',
   REGISTRATION_REJECTED: 'registration_rejected',
   USER_CREATED: 'user_created',
+  AUDIT_APPROVED: 'audit_approved',
+  AUDIT_REJECTED: 'audit_rejected',
+  AUDIT_FORWARDED: 'audit_forwarded',
+  AUDIT_RESUBMITTED: 'audit_resubmitted',
 };
 
 const ACTIVITY_STATUS = {
