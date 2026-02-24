@@ -45,6 +45,9 @@ export default function Layout() {
               <NavLink to="/pradhikaran" end className={({ isActive }) => (isActive ? 'active' : '')}>
                 Dashboard
               </NavLink>
+              <NavLink to="/pradhikaran/trash" className={({ isActive }) => (isActive ? 'active' : '')}>
+                Trash
+              </NavLink>
               <NavLink to="/pradhikaran/permissions" className={({ isActive }) => (isActive ? 'active' : '')}>
                 Permissions
               </NavLink>

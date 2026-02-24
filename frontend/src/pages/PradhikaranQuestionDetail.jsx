@@ -44,10 +44,10 @@ export default function PradhikaranQuestionDetail() {
   }, [id]);
 
   const handleDelete = async () => {
-    if (!window.confirm('Are you sure you want to delete this question? This action cannot be undone.')) return;
+    if (!window.confirm('Move this question to Trash?')) return;
     try {
       await api.delete(`/questions/${id}`);
-      navigate('/pradhikaran');
+      navigate('/pradhikaran/trash');
     } catch (e) {
       setError(e.response?.data?.message || 'Failed');
     }
@@ -96,7 +96,7 @@ export default function PradhikaranQuestionDetail() {
   const acceptedAnswers = answers.filter((a) => a.status === 'accepted');
   const canEdit = question?.status === 'open';
   const canFinalize = question?.status !== 'finalized' && acceptedAnswers.length > 0;
-  const canDelete = question?.status === 'locked'; // Only allow delete for locked questions
+  const canDelete = question?.status === 'locked' || question?.status === 'open';
 
   if (loading) return <div className="glass p-4">Loading...</div>;
   if (!question) return <div className="glass p-4">Question not found.</div>;
@@ -155,7 +155,7 @@ export default function PradhikaranQuestionDetail() {
           )}
           {canDelete && (
             <button type="button" className="btn btn-danger" onClick={handleDelete}>
-              Delete Question
+              Delete (Move to Trash)
             </button>
           )}
         </div>

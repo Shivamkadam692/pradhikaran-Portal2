@@ -126,6 +126,26 @@ const remove = async (req, res, next) => {
   }
 };
 
+const hardRemove = async (req, res, next) => {
+  try {
+    const result = await questionService.hardDelete(req.params.id, req.user._id);
+    if (!result) {
+      return res.status(404).json({ success: false, message: 'Question not found in trash or not deletable' });
+    }
+    res.json({ success: true, message: 'Question permanently deleted' });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const listTrashed = async (req, res, next) => {
+  try {
+    const list = await questionService.listTrashedForPradhikaran(req.user._id);
+    res.json({ success: true, data: list });
+  } catch (err) {
+    next(err);
+  }
+};
 const getAnswers = async (req, res, next) => {
   try {
     const answers = await answerService.listByQuestion(req.params.id, req.user._id);
@@ -220,6 +240,8 @@ module.exports = {
   update,
   lock,
   remove,
+  hardRemove,
+  listTrashed,
   getAnswers,
   finalize,
   classify,

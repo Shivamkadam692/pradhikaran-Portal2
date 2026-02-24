@@ -164,32 +164,50 @@ function ApprovedList() {
   return (
     <div className="dashboard-section">
       <div className="section-header">
-        <h2>Approved (Ready to Forward)</h2>
+        <h2>Approved — Ready to Forward</h2>
         <div className="dashboard-actions">
-          <button type="button" className="btn btn-primary" onClick={forwardSelected} disabled={submitting}>
-            {submitting ? 'Forwarding...' : 'Forward Selected to Pradhikaran'}
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={forwardSelected}
+            disabled={submitting || Object.values(selected).filter(Boolean).length === 0}
+            title="Send selected questions to Pradhikaran"
+          >
+            {submitting ? 'Forwarding…' : `Forward Selected (${Object.values(selected).filter(Boolean).length})`}
           </button>
         </div>
       </div>
       {error && <div className="auth-error mb-2">{error}</div>}
       <div className="card-grid">
-        {questions.map((q, idx) => (
-          <label key={q._id} className="glass card">
-            <div className="d-flex align-items-center">
-              <input
-                type="checkbox"
-                checked={!!selected[q._id]}
-                onChange={() => toggle(q._id)}
-                className="me-2"
-                aria-label={`Select question ${q.title}`}
-              />
-              <span className="question-index">Q{idx + 1}</span>
-              <h4>{q.title}</h4>
+        {questions.map((q, idx) => {
+          const inputId = `chk-${q._id}`;
+          const isChecked = !!selected[q._id];
+          return (
+            <div key={q._id} className="glass card select-card">
+              <div className="select-row">
+                <label htmlFor={inputId} className="flex-1">
+                  <div className="d-flex align-items-center">
+                    <span className="question-index">Q{idx + 1}</span>
+                    <h4>{q.title}</h4>
+                  </div>
+                  <p className="text-muted">{q.description}</p>
+                  <div className="senate-meta-row">
+                    <span className="meta">Created: {q.createdAt ? new Date(q.createdAt).toLocaleString() : '—'}</span>
+                    <span className="meta ms-2">From Senate: {q.createdBy?.name || 'N/A'}</span>
+                  </div>
+                </label>
+                <input
+                  id={inputId}
+                  type="checkbox"
+                  className="select-checkbox"
+                  checked={isChecked}
+                  onChange={() => toggle(q._id)}
+                  aria-label={`Select question ${q.title}`}
+                />
+              </div>
             </div>
-            <p className="text-muted">{q.description}</p>
-            <span className="meta">Created: {q.createdAt ? new Date(q.createdAt).toLocaleString() : '—'}</span>
-          </label>
-        ))}
+          );
+        })}
       </div>
       {questions.length === 0 && <p className="text-muted">No approved items to forward.</p>}
     </div>

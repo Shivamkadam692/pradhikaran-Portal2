@@ -46,6 +46,18 @@ router.get(
   questionController.listSenateInbox
 );
 
+router.get(
+  '/trashed',
+  authorizeRoles(ROLES.PRADHIKARAN),
+  questionController.listTrashed
+);
+
+router.delete(
+  '/:id/permanent',
+  authorizeRoles(ROLES.PRADHIKARAN),
+  questionController.hardRemove
+);
+
 router
   .route('/:id')
   .get(questionController.getOne)

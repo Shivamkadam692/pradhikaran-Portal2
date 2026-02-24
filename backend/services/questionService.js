@@ -102,7 +102,7 @@ const update = async (id, data, userId) => {
   const question = await Question.findOne({
     _id: id,
     isDeleted: { $ne: true },
-    status: { $in: [QUESTION_STATUS.OPEN] },
+    status: { $in: [QUESTION_STATUS.OPEN, QUESTION_STATUS.LOCKED] },
     $or: [
       { ownerPradhikaran: userId },
       { ownerPradhikaran: { $exists: false }, createdBy: userId },
@@ -162,6 +162,35 @@ const softDelete = async (id, userId) => {
   await question.save();
   await activityLogService.logQuestionDeleted(userId, question._id, { title: question.title });
   return question;
+};
+
+const hardDelete = async (id, userId) => {
+  const question = await Question.findOne({
+    _id: id,
+    isDeleted: true,
+    $or: [
+      { ownerPradhikaran: userId },
+      { ownerPradhikaran: { $exists: false }, createdBy: userId },
+    ],
+  });
+  if (!question) return null;
+  await Question.deleteOne({ _id: id });
+  await activityLogService.logQuestionDeleted(userId, id, { permanent: true });
+  return { _id: id };
+};
+
+const listTrashedForPradhikaran = async (userId) => {
+  return Question.find({
+    isDeleted: true,
+    $or: [
+      { ownerPradhikaran: userId },
+      { ownerPradhikaran: { $exists: false }, createdBy: userId },
+    ],
+  })
+    .populate('department', 'name email departmentName')
+    .populate('createdBy', 'name email role')
+    .sort({ updatedAt: -1 })
+    .lean();
 };
 
 const finalize = async (id, finalAnswerText, userId) => {
@@ -285,4 +314,6 @@ module.exports = {
   listAllForSuperAdmin,
   classifyAndAssign,
   listSenateInboxForPradhikaran,
+  hardDelete,
+  listTrashedForPradhikaran,
 };

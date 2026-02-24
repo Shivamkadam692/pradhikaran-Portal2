@@ -7,6 +7,7 @@ import Permissions from './Permissions';
 import './Dashboard.css';
 import DepartmentsOverview from './DepartmentsOverview';
 import DepartmentDetails from './DepartmentDetails';
+import PradhikaranTrash from './PradhikaranTrash';
 
 function QuestionList() {
   const [questions, setQuestions] = useState([]);
@@ -321,6 +322,7 @@ export default function PradhikaranDashboard() {
   return (
     <Routes>
       <Route index element={<QuestionList />} />
+      <Route path="trash" element={<PradhikaranTrash />} />
       <Route path="departments" element={<DepartmentsOverview />} />
       <Route path="departments/:id" element={<DepartmentDetails />} />
       <Route path="history" element={<History />} />
