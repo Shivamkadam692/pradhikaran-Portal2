@@ -58,6 +58,12 @@ router.delete(
   questionController.hardRemove
 );
 
+router.post(
+  '/:id/restore',
+  authorizeRoles(ROLES.PRADHIKARAN),
+  questionController.restore
+);
+
 router
   .route('/:id')
   .get(questionController.getOne)

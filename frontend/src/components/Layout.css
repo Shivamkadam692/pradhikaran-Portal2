@@ -48,6 +48,9 @@
 }
 
 .layout-nav a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   padding: 0.5rem 1rem;
   border-radius: 12px;
   color: var(--nav-link-inactive, #334155);
@@ -99,7 +102,10 @@
 }
 
 @media (max-width: 768px) {
-  .nav-toggle { display: flex; }
+  .nav-toggle {
+    display: flex;
+  }
+
   .layout-nav {
     position: absolute;
     top: 100%;
@@ -111,5 +117,8 @@
     padding: 1rem;
     display: none;
   }
-  .layout-nav.open { display: flex; }
+
+  .layout-nav.open {
+    display: flex;
+  }
 }

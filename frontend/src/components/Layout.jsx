@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import NotificationDropdown from './NotificationDropdown';
+import { LayoutDashboard, History, Trash2, Key, Inbox, ShieldAlert } from 'lucide-react';
 import './Layout.css';
-
 export default function Layout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -33,56 +32,65 @@ export default function Layout() {
           {isDepartment && (
             <>
               <NavLink to="/department" end className={({ isActive }) => (isActive ? 'active' : '')}>
-                Dashboard
+                <LayoutDashboard size={18} />
+                <span>Dashboard</span>
               </NavLink>
               <NavLink to="/department/history" className={({ isActive }) => (isActive ? 'active' : '')}>
-                History
+                <History size={18} />
+                <span>History</span>
               </NavLink>
             </>
           )}
           {isPradhikaran && (
             <>
               <NavLink to="/pradhikaran" end className={({ isActive }) => (isActive ? 'active' : '')}>
-                Dashboard
+                <LayoutDashboard size={18} />
+                <span>Dashboard</span>
               </NavLink>
               <NavLink to="/pradhikaran/trash" className={({ isActive }) => (isActive ? 'active' : '')}>
-                Trash
+                <Trash2 size={18} />
+                <span>Trash</span>
               </NavLink>
               <NavLink to="/pradhikaran/permissions" className={({ isActive }) => (isActive ? 'active' : '')}>
-                Permissions
+                <Key size={18} />
+                <span>Permissions</span>
               </NavLink>
               <NavLink to="/pradhikaran/history" className={({ isActive }) => (isActive ? 'active' : '')}>
-                History
+                <History size={18} />
+                <span>History</span>
               </NavLink>
               <NavLink to="/pradhikaran/senate-inbox" className={({ isActive }) => (isActive ? 'active' : '')}>
-                Senate Questions
+                <Inbox size={18} />
+                <span>Senate Questions</span>
               </NavLink>
             </>
           )}
           {isSenate && (
             <>
               <NavLink to="/senate" end className={({ isActive }) => (isActive ? 'active' : '')}>
-                Dashboard
+                <LayoutDashboard size={18} />
+                <span>Dashboard</span>
               </NavLink>
             </>
           )}
           {isSuperAdmin && (
             <>
               <NavLink to="/super-admin" end className={({ isActive }) => (isActive ? 'active' : '')}>
-                Super Admin
+                <ShieldAlert size={18} />
+                <span>Super Admin</span>
               </NavLink>
             </>
           )}
           {isAuditor && (
             <>
               <NavLink to="/auditor" end className={({ isActive }) => (isActive ? 'active' : '')}>
-                Auditor
+                <LayoutDashboard size={18} />
+                <span>Auditor</span>
               </NavLink>
             </>
           )}
         </nav>
         <div className="header-actions">
-          <NotificationDropdown />
           <div className="user-menu">
             <span className="user-name">{user?.name}</span>
             <span className="user-role badge badge-role">{user?.role?.replace('_', ' ')}</span>

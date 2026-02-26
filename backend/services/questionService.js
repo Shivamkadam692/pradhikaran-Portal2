@@ -179,6 +179,22 @@ const hardDelete = async (id, userId) => {
   return { _id: id };
 };
 
+const restore = async (id, userId) => {
+  const question = await Question.findOne({
+    _id: id,
+    isDeleted: true,
+    $or: [
+      { ownerPradhikaran: userId },
+      { ownerPradhikaran: { $exists: false }, createdBy: userId },
+    ],
+  });
+  if (!question) return null;
+  question.isDeleted = false;
+  await question.save();
+  await activityLogService.logQuestionUpdated(userId, question._id, { action: 'restored', old: { isDeleted: true }, new: { isDeleted: false } });
+  return question;
+};
+
 const listTrashedForPradhikaran = async (userId) => {
   return Question.find({
     isDeleted: true,
@@ -315,5 +331,6 @@ module.exports = {
   classifyAndAssign,
   listSenateInboxForPradhikaran,
   hardDelete,
+  restore,
   listTrashedForPradhikaran,
 };

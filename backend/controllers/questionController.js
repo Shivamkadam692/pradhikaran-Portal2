@@ -146,6 +146,18 @@ const listTrashed = async (req, res, next) => {
     next(err);
   }
 };
+
+const restore = async (req, res, next) => {
+  try {
+    const question = await questionService.restore(req.params.id, req.user._id);
+    if (!question) {
+      return res.status(404).json({ success: false, message: 'Question not found in trash or not restorable' });
+    }
+    res.json({ success: true, message: 'Question restored successfully', data: question });
+  } catch (err) {
+    next(err);
+  }
+};
 const getAnswers = async (req, res, next) => {
   try {
     const answers = await answerService.listByQuestion(req.params.id, req.user._id);
@@ -242,6 +254,7 @@ module.exports = {
   remove,
   hardRemove,
   listTrashed,
+  restore,
   getAnswers,
   finalize,
   classify,
