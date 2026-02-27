@@ -13,6 +13,7 @@ function QuestionList() {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [departments, setDepartments] = useState([]);
+  const [departmentOptions, setDepartmentOptions] = useState([]);
   const [showCreate, setShowCreate] = useState(false);
   const [form, setForm] = useState({ title: '', description: '', department: '', deadline: '' });
   const [submitting, setSubmitting] = useState(false);
@@ -27,6 +28,8 @@ function QuestionList() {
       ]);
       setQuestions(qRes.data.data);
       setDepartments(dRes.data.data);
+      const uniqueDepts = [...new Set(dRes.data.data.filter(d => d.isApproved).map(d => (d.departmentName || d.name || '').trim()))].filter(Boolean);
+      setDepartmentOptions(uniqueDepts.length > 0 ? uniqueDepts : undefined);
     } catch (e) {
       setError(e.response?.data?.message || 'Failed to load');
     } finally {
@@ -119,6 +122,7 @@ function QuestionList() {
                 onChange={(val) => setForm((f) => ({ ...f, department: val }))}
                 required
                 placeholder="Select department"
+                options={departmentOptions}
               />
             </div>
             <label>
@@ -170,6 +174,7 @@ function QuestionList() {
 function SenateInbox() {
   const [questions, setQuestions] = useState([]);
   const [departments, setDepartments] = useState([]);
+  const [departmentOptions, setDepartmentOptions] = useState([]);
   const [selectedId, setSelectedId] = useState('');
   const [form, setForm] = useState({ department: '', priority: 'medium', tags: '', note: '' });
   const [loading, setLoading] = useState(true);
@@ -184,6 +189,8 @@ function SenateInbox() {
       ]);
       setQuestions(qRes.data.data || []);
       setDepartments(dRes.data.data || []);
+      const uniqueDepts = [...new Set((dRes.data.data || []).filter(d => d.isApproved).map(d => (d.departmentName || d.name || '').trim()))].filter(Boolean);
+      setDepartmentOptions(uniqueDepts.length > 0 ? uniqueDepts : undefined);
       if (qRes.data.data && qRes.data.data.length > 0) {
         setSelectedId(qRes.data.data[0]._id);
       }
@@ -223,9 +230,9 @@ function SenateInbox() {
       const tagsArray =
         typeof form.tags === 'string'
           ? form.tags
-              .split(',')
-              .map((t) => t.trim())
-              .filter(Boolean)
+            .split(',')
+            .map((t) => t.trim())
+            .filter(Boolean)
           : [];
       await api.post(`/questions/${selectedId}/classify`, {
         departmentId,
@@ -277,6 +284,7 @@ function SenateInbox() {
                 value={form.department}
                 onChange={(val) => setForm((f) => ({ ...f, department: val }))}
                 placeholder="Select department"
+                options={departmentOptions}
               />
             </div>
             <label>

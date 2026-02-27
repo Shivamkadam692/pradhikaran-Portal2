@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import DepartmentSelect from '../components/DepartmentSelect';
+import { DEPARTMENT_OPTIONS } from '../constants/departments';
+import api from '../api/client';
 import './Auth.css';
 
 export default function DepartmentRegister() {
@@ -9,15 +11,39 @@ export default function DepartmentRegister() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [departmentName, setDepartmentName] = useState('');
+  const [customDepartment, setCustomDepartment] = useState('');
   const [departmentError, setDepartmentError] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [departmentOptions, setDepartmentOptions] = useState(DEPARTMENT_OPTIONS);
   const { register, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (isAuthenticated) navigate('/', { replace: true });
+
+    // Fetch public dynamic departments
+    const fetchDepartments = async () => {
+      try {
+        const res = await api.get('/auth/departments');
+        const customDepts = res.data.data
+          .map(d => (d.departmentName || d.name || '').trim())
+          .filter(Boolean);
+        const uniqueCustomDepts = [...new Set(customDepts)];
+
+        // Merge standard options with dynamic custom departments, ensuring 'Other' remains at the end
+        const baseOptions = DEPARTMENT_OPTIONS.filter(opt => opt !== 'Other');
+        const dynamicMerged = [...new Set([...baseOptions, ...uniqueCustomDepts])];
+        setDepartmentOptions([...dynamicMerged, 'Other']);
+      } catch (err) {
+        console.error('Failed to load dynamic departments:', err);
+      }
+    };
+
+    if (!isAuthenticated) {
+      fetchDepartments();
+    }
   }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e) => {
@@ -28,9 +54,14 @@ export default function DepartmentRegister() {
       setDepartmentError('Please select a department');
       return;
     }
+    if (departmentName === 'Other' && (!customDepartment || customDepartment.trim() === '')) {
+      setDepartmentError('Please enter a department name');
+      return;
+    }
+    const finalDepartment = departmentName === 'Other' ? customDepartment.trim() : departmentName;
     setLoading(true);
     try {
-      await register(name, email, password, departmentName);
+      await register(name, email, password, finalDepartment);
       setSuccess(true);
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
@@ -96,8 +127,25 @@ export default function DepartmentRegister() {
               }}
               required
               error={departmentError}
+              options={departmentOptions}
             />
           </div>
+          {departmentName === 'Other' && (
+            <label htmlFor="dept-reg-custom">
+              Specify Department
+              <input
+                id="dept-reg-custom"
+                type="text"
+                value={customDepartment}
+                onChange={(e) => {
+                  setCustomDepartment(e.target.value);
+                  setDepartmentError('');
+                }}
+                placeholder="Enter department name"
+                required
+              />
+            </label>
+          )}
           <label htmlFor="dept-reg-password">
             Password
             <input

@@ -24,6 +24,7 @@ router.post('/login', loginValidation, validate, authController.login);
 router.post('/refresh', authController.refresh);
 router.post('/logout', authController.logout);
 router.post('/register', registerValidation, validate, authController.registerDepartment);
+router.get('/departments', authController.getPublicDepartments);
 router.get('/me', authenticate, authController.me);
 
 module.exports = router;

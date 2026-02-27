@@ -108,12 +108,6 @@ const registerDepartment = async (req, res, next) => {
     if (!trimmedDept) {
       return res.status(400).json({ success: false, message: 'Department selection is required' });
     }
-    if (!ALLOWED_DEPARTMENT_NAMES.includes(trimmedDept)) {
-      return res.status(400).json({
-        success: false,
-        message: `Department must be one of: ${ALLOWED_DEPARTMENT_NAMES.join(', ')}`,
-      });
-    }
     const existing = await User.findOne({ email, isDeleted: { $ne: true } });
     if (existing) {
       return res.status(400).json({ success: false, message: 'Email already registered' });
@@ -147,10 +141,24 @@ const me = async (req, res, next) => {
   }
 };
 
+const getPublicDepartments = async (req, res, next) => {
+  try {
+    const filter = { role: ROLES.DEPARTMENT, isApproved: true, isDeleted: { $ne: true } };
+    const departments = await User.find(filter)
+      .select('name departmentName')
+      .sort({ createdAt: -1 })
+      .lean();
+    res.json({ success: true, data: departments });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   login,
   refresh,
   logout,
   registerDepartment,
   me,
+  getPublicDepartments,
 };

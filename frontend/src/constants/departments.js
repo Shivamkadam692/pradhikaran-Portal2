@@ -9,6 +9,7 @@ export const DEPARTMENT_OPTIONS = [
   'Mathematics and Statistics',
   'Pharmacy',
   'Language',
+  'Other',
 ];
 
 export const DEFAULT_DEPARTMENT_PLACEHOLDER = 'Select department';

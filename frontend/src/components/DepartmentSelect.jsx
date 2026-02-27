@@ -25,6 +25,7 @@ export default function DepartmentSelect({
   label = 'Department',
   placeholder = DEFAULT_DEPARTMENT_PLACEHOLDER,
   className = '',
+  options = DEPARTMENT_OPTIONS,
 }) {
   const handleChange = (e) => {
     const newValue = e.target.value;
@@ -51,7 +52,7 @@ export default function DepartmentSelect({
         <option value="" disabled={required}>
           {placeholder}
         </option>
-        {DEPARTMENT_OPTIONS.map((dept) => (
+        {options.map((dept) => (
           <option key={dept} value={dept}>
             {dept}
           </option>
