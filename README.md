@@ -5,7 +5,7 @@ A production-ready MERN stack application for **research governance and collabor
 ## Features
 
 - **Role-based access**: Super Admin (hidden URL), Pradhikaran, Department
-- **Department selection**: Fixed department dropdown (Computer Science, Physical Science, Chemical Science, Mathematics and Statistics, Pharmacy, Language) in **Department registration** and **Pradhikaran create-question**; required on registration; validation on backend
+- **Department selection**: Dynamic department dropdown. Users can select "Other" during registration to define custom departments. Once approved, these custom departments become available in the dropdown for future registrations and for assigning questions by Pradhikaran.
 - **Strict workflow**: Question states (open → locked → finalized), Answer states (pending_review, update_requested, accepted, rejected)
 - **Final decision authority**: Pradhikaran can merge accepted answers into an official final answer and finalize
 - **Permissions (Pradhikaran)**: Dedicated **Permissions** section to view pending department registrations, **approve** or **reject** with mandatory reason; audit logging and real-time notifications to departments (approval/rejection)
@@ -20,6 +20,7 @@ A production-ready MERN stack application for **research governance and collabor
 
 ## Recent Changes
 
+- **Dynamic Custom Departments**: Added support for custom department registration. Users selecting "Other" can specify new departments. Upon approval, these dynamically populate the registration and assignment dropdowns across the portal.
 - Marathi (Devanagari) Unicode rendering in PDF exports via PDFKit. System font detection for Nirmala UI/Mangal (Windows) and Noto/Lohit (Linux/macOS). For consistent results, bundle a Devanagari TTF (e.g., NotoSansDevanagari-Regular.ttf) and point PDFKit to it.
 - Removed manual "Lock Question" button from Pradhikaran UI. Auto-lock via cron continues based on deadlines.
 - New Pradhikaran section: Departments overview at `/pradhikaran/departments` listing all departments and questions answered by each.
@@ -91,7 +92,7 @@ VITE_API_ORIGIN=http://localhost:5000
 
 ## API Overview
 
-- **Auth:** `POST /api/auth/register`, `POST /api/auth/login`, `POST /api/auth/refresh`, `POST /api/auth/logout`, `GET /api/auth/me`
+- **Auth:** `POST /api/auth/register`, `POST /api/auth/login`, `POST /api/auth/refresh`, `POST /api/auth/logout`, `GET /api/auth/me`, `GET /api/auth/departments` (Public dynamic department list)
 - **Users:** `GET/POST /api/users/pradhikaran` (Super Admin), `GET /api/users/departments`, `GET /api/users/pending-registrations` (Pradhikaran), `POST /api/users/:userId/approve` (Pradhikaran), `POST /api/users/:userId/reject` (Pradhikaran, body: `{ reason }`)
 - **Questions:** `GET/POST /api/questions`, `GET/PUT/DELETE /api/questions/:id`, `POST /api/questions/:id/lock`, `GET /api/questions/:id/answers`, `POST /api/questions/:id/finalize`
 - **Answers:** `POST /api/answers`, `GET /api/answers/question/:questionId`, `PUT /api/answers/:id`, `POST /api/answers/:id/status`
