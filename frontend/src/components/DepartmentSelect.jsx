@@ -1,7 +1,6 @@
 import React from 'react';
 import { DEPARTMENT_OPTIONS, DEFAULT_DEPARTMENT_PLACEHOLDER } from '../constants/departments';
 import './DepartmentSelect.css';
-import './DepartmentSelect.css';
 
 /**
  * Reusable department dropdown with consistent styling and accessibility.

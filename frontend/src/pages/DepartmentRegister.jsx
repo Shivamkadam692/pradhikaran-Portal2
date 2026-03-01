@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import DepartmentSelect from '../components/DepartmentSelect';
 import { DEPARTMENT_OPTIONS } from '../constants/departments';
-import api from '../api/client';
 import './Auth.css';
 
 export default function DepartmentRegister() {
@@ -16,34 +15,11 @@ export default function DepartmentRegister() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [departmentOptions, setDepartmentOptions] = useState(DEPARTMENT_OPTIONS);
   const { register, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (isAuthenticated) navigate('/', { replace: true });
-
-    // Fetch public dynamic departments
-    const fetchDepartments = async () => {
-      try {
-        const res = await api.get('/auth/departments');
-        const customDepts = res.data.data
-          .map(d => (d.departmentName || d.name || '').trim())
-          .filter(Boolean);
-        const uniqueCustomDepts = [...new Set(customDepts)];
-
-        // Merge standard options with dynamic custom departments, ensuring 'Other' remains at the end
-        const baseOptions = DEPARTMENT_OPTIONS.filter(opt => opt !== 'Other');
-        const dynamicMerged = [...new Set([...baseOptions, ...uniqueCustomDepts])];
-        setDepartmentOptions([...dynamicMerged, 'Other']);
-      } catch (err) {
-        console.error('Failed to load dynamic departments:', err);
-      }
-    };
-
-    if (!isAuthenticated) {
-      fetchDepartments();
-    }
   }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e) => {
@@ -127,7 +103,7 @@ export default function DepartmentRegister() {
               }}
               required
               error={departmentError}
-              options={departmentOptions}
+              options={DEPARTMENT_OPTIONS}
             />
           </div>
           {departmentName === 'Other' && (
