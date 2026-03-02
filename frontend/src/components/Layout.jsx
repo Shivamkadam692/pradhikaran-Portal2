@@ -47,10 +47,6 @@ export default function Layout() {
                 <LayoutDashboard size={18} />
                 <span>Dashboard</span>
               </NavLink>
-              <NavLink to="/pradhikaran/trash" className={({ isActive }) => (isActive ? 'active' : '')}>
-                <Trash2 size={18} />
-                <span>Trash</span>
-              </NavLink>
               <NavLink to="/pradhikaran/permissions" className={({ isActive }) => (isActive ? 'active' : '')}>
                 <Key size={18} />
                 <span>Permissions</span>

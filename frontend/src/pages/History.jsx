@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Trash2 } from 'lucide-react';
 import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -161,6 +162,18 @@ export default function History() {
       <div className="section-header">
         <h2>History</h2>
         <div className="history-actions">
+          {user?.role === 'PRADHIKARAN' && (
+            <button
+              type="button"
+              className="btn btn-secondary"
+              style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+              onClick={() => navigate('/pradhikaran/trash')}
+              aria-label="View Trash"
+            >
+              <Trash2 size={16} />
+              <span>Trash</span>
+            </button>
+          )}
           <button
             type="button"
             className="btn btn-secondary"
