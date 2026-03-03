@@ -236,6 +236,269 @@ textarea::placeholder {
   color: white;
 }
 
+/* Priority badges */
+.badge-low {
+  background: linear-gradient(135deg, #166534, #22c55e);
+  color: white;
+}
+
+.badge-medium {
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+  color: white;
+}
+
+.badge-high {
+  background: linear-gradient(135deg, #92400e, #f59e0b);
+  color: white;
+}
+
+.badge-urgent {
+  background: linear-gradient(135deg, #7f1d1d, #ef4444);
+  color: white;
+}
+
+/* Deadline chip */
+.deadline-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  border: 1px solid currentColor;
+}
+
+.deadline-chip.overdue {
+  color: #dc2626;
+  background: #fef2f2;
+  border-color: #fca5a5;
+}
+
+.deadline-chip.soon {
+  color: #b45309;
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.deadline-chip.ok {
+  color: #047857;
+  background: #ecfdf5;
+  border-color: #6ee7b7;
+}
+
+/* Answer count pill */
+.answer-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  background: #eef2ff;
+  color: #4338ca;
+  border: 1px solid #c7d2fe;
+}
+
+/* Status banner strip */
+.status-banner {
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.status-banner.update-requested {
+  background: #fffbeb;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.status-banner.pending {
+  background: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+}
+
+.status-banner.accepted {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+}
+
+/* Drag-drop upload zone */
+.upload-zone {
+  border: 2px dashed var(--page-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition);
+  color: var(--page-text-muted);
+}
+
+.upload-zone:hover,
+.upload-zone.dragover {
+  border-color: var(--indigo);
+  background: rgba(99, 102, 241, 0.04);
+  color: var(--indigo);
+}
+
+.upload-zone input[type="file"] {
+  display: none;
+}
+
+.upload-zone-icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+/* Inline remark field */
+.remark-field {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.remark-field textarea {
+  flex: 1;
+  min-width: 200px;
+  min-height: 70px;
+  font-size: 0.875rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+}
+
+/* Question info header strip */
+.q-info-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: #f8fafc;
+  border-radius: 10px;
+  border: 1px solid var(--page-border);
+  margin-top: 0.75rem;
+}
+
+.q-info-strip .q-info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8125rem;
+  color: var(--page-text-muted);
+}
+
+.q-info-strip .q-info-item strong {
+  color: var(--page-text);
+  font-weight: 600;
+}
+
+/* Senate inbox card grid */
+.senate-inbox-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (max-width: 700px) {
+  .senate-inbox-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.senate-q-card {
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 2px solid var(--page-border);
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition);
+  background: var(--page-bg);
+}
+
+.senate-q-card:hover {
+  border-color: var(--indigo);
+  background: #f5f3ff;
+}
+
+.senate-q-card.selected {
+  border-color: var(--indigo);
+  background: #eef2ff;
+}
+
+.senate-q-card-title {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  margin-bottom: 0.25rem;
+  color: var(--page-text);
+}
+
+.senate-q-card-meta {
+  font-size: 0.75rem;
+  color: var(--page-text-muted);
+}
+
+/* Answer accordion */
+.answer-accordion-item {
+  border: 1px solid var(--page-border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.answer-accordion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 1rem;
+  background: #f8fafc;
+  cursor: pointer;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.answer-accordion-header:hover {
+  background: #f1f5f9;
+}
+
+.answer-accordion-body {
+  padding: 1rem;
+  border-top: 1px solid var(--page-border);
+  background: var(--page-bg);
+}
+
+.answer-dept-name {
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.answer-accordion-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+/* Unified toolbar */
+.q-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #f8fafc;
+  border: 1px solid var(--page-border);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
 /* Cards hover */
 .card-hover {
   transition: transform var(--transition), box-shadow var(--transition);

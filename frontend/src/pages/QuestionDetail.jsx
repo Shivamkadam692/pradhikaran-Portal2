@@ -1,9 +1,47 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import './QuestionDetail.css';
 import RichTextEditor from '../components/RichTextEditor';
+
+const PRIORITY_LABELS = { low: 'Low', medium: 'Medium', high: 'High', urgent: 'Urgent' };
+
+function DeadlineChip({ deadline }) {
+  if (!deadline) return null;
+  const d = new Date(deadline);
+  const diffDays = Math.ceil((d - new Date()) / (1000 * 60 * 60 * 24));
+  let cls = 'ok', label = d.toLocaleDateString();
+  if (diffDays < 0) { cls = 'overdue'; label = 'Overdue'; }
+  else if (diffDays <= 3) { cls = 'soon'; label = `Due in ${diffDays}d`; }
+  return <span className={`deadline-chip ${cls}`}>📅 {label}</span>;
+}
+
+function StatusBanner({ answer }) {
+  if (!answer) return null;
+  if (answer.status === 'update_requested') {
+    return (
+      <div className="status-banner update-requested">
+        ✏️ Update requested — please revise your answer and resubmit.
+      </div>
+    );
+  }
+  if (answer.status === 'pending_review') {
+    return (
+      <div className="status-banner pending">
+        🔵 Your answer is under review.
+      </div>
+    );
+  }
+  if (answer.status === 'accepted') {
+    return (
+      <div className="status-banner accepted">
+        ✅ Your answer was accepted.
+      </div>
+    );
+  }
+  return null;
+}
 
 export default function QuestionDetail() {
   const { id } = useParams();
@@ -18,17 +56,17 @@ export default function QuestionDetail() {
   const [error, setError] = useState('');
   const [files, setFiles] = useState([]);
   const [previewFiles, setPreviewFiles] = useState([]);
+  const [dragOver, setDragOver] = useState(false);
+  const fileInputRef = useRef(null);
 
   const load = async () => {
     try {
       const qRes = await api.get(`/questions/${id}`);
       setQuestion(qRes.data.data);
-      api
-        .get(`/answers/question/${id}`)
-        .then((res) => {
+      api.get(`/answers/question/${id}`)
+        .then(res => {
           setAnswer(res.data.data);
           setContent(res.data.data?.content || '');
-          // Set existing attachments if any
           if (res.data.data?.attachments) {
             setPreviewFiles(res.data.data.attachments);
           }
@@ -41,70 +79,58 @@ export default function QuestionDetail() {
     }
   };
 
-  useEffect(() => {
-    load();
-  }, [id]);
+  useEffect(() => { load(); }, [id]);
 
-  const handleFileChange = (e) => {
-    const selectedFiles = Array.from(e.target.files);
-    setFiles(prev => [...prev, ...selectedFiles]);
-    
-    // Create preview URLs for the selected files
-    const newPreviews = selectedFiles.map(file => ({
-      originalName: file.name,
-      mimeType: file.type,
-      size: file.size,
-      fileUrl: URL.createObjectURL(file),
-      isNew: true // Mark as new file to distinguish from existing attachments
+  /* ── File handling ── */
+  const addFiles = (selected) => {
+    const arr = Array.from(selected);
+    setFiles(prev => [...prev, ...arr]);
+    const previews = arr.map(f => ({
+      originalName: f.name,
+      mimeType: f.type,
+      size: f.size,
+      fileUrl: URL.createObjectURL(f),
+      isNew: true,
     }));
-    
-    setPreviewFiles(prev => [...prev, ...newPreviews]);
+    setPreviewFiles(prev => [...prev, ...previews]);
   };
 
-  const removeFile = (index, isNew) => {
-    if (isNew) {
-      // Remove from new files
-      setFiles(prev => prev.filter((_, i) => i !== index));
-      setPreviewFiles(prev => prev.filter((_, i) => i !== index));
-    } else {
-      // Remove from existing attachments
-      setPreviewFiles(prev => prev.filter((_, i) => i !== index));
+  const handleFileChange = (e) => addFiles(e.target.files);
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDragOver(false);
+    if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
+  };
+
+  const removeFile = (index) => {
+    const pf = previewFiles[index];
+    if (pf.isNew) {
+      // count how many new files come before this index
+      const newCount = previewFiles.slice(0, index).filter(f => f.isNew).length;
+      setFiles(prev => prev.filter((_, i) => i !== newCount));
     }
+    setPreviewFiles(prev => prev.filter((_, i) => i !== index));
   };
 
+  /* ── Submit ── */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSubmitting(true);
-
     try {
       const formData = new FormData();
       formData.append('questionId', id);
       formData.append('content', content);
-
-      // Append files to form data
-      files.forEach(file => {
-        formData.append('attachments', file);
-      });
-
-      let response;
+      files.forEach(f => formData.append('attachments', f));
+      const opts = { headers: { 'Content-Type': 'multipart/form-data' } };
       if (answer) {
-        // Update existing answer
-        response = await api.put(`/answers/${answer._id}`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+        await api.put(`/answers/${answer._id}`, formData, opts);
       } else {
-        // Create new answer
-        response = await api.post('/answers', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+        await api.post('/answers', formData, opts);
       }
-
       setEditing(false);
+      setFiles([]);
       load();
     } catch (e) {
       setError(e.response?.data?.message || 'Failed to save');
@@ -116,7 +142,7 @@ export default function QuestionDetail() {
   const canEdit = question?.status === 'open' && (!answer || answer.status === 'update_requested');
   const isFinalized = question?.status === 'finalized';
 
-  if (loading) return <div className="glass p-4">Loading...</div>;
+  if (loading) return <div className="glass p-4">Loading…</div>;
   if (!question) return <div className="glass p-4">Question not found.</div>;
 
   return (
@@ -126,91 +152,130 @@ export default function QuestionDetail() {
       </button>
       {error && <div className="auth-error mb-4">{error}</div>}
 
+      {/* Question info card */}
       <div className="glass p-4 mb-4">
         <h1>{question.title}</h1>
         <p className="description">{question.description}</p>
-        <span className={`badge badge-${question.status}`}>{question.status}</span>
+        <div className="q-info-strip">
+          <div className="q-info-item">
+            Status: <span className={`badge badge-${question.status}`}>{question.status}</span>
+          </div>
+          {question.priority && (
+            <div className="q-info-item">
+              Priority: <span className={`badge badge-${question.priority}`}>{PRIORITY_LABELS[question.priority]}</span>
+            </div>
+          )}
+          {question.deadline && (
+            <div className="q-info-item"><DeadlineChip deadline={question.deadline} /></div>
+          )}
+          {question.createdBy && (
+            <div className="q-info-item">
+              👤 <strong>{question.createdBy.name || question.createdBy.email}</strong>
+            </div>
+          )}
+        </div>
       </div>
 
+      {/* Finalized answer (read-only for department) */}
+      {isFinalized && (
+        <div className="glass p-4 mb-4" style={{ borderLeft: '4px solid var(--indigo)' }}>
+          <h3>✅ Final Answer Published</h3>
+          <p className="text-muted" style={{ fontSize: '0.875rem', marginBottom: '0.5rem' }}>
+            This question has been finalized. The official answer is below.
+          </p>
+        </div>
+      )}
 
+      {/* Answer submission section */}
       <div className="glass p-4 mb-4">
         <h3>Your Submission</h3>
+
+        <StatusBanner answer={answer} />
+
         {!answer && !editing && canEdit && (
           <button type="button" className="btn btn-primary" onClick={() => setEditing(true)}>
             Submit Answer
           </button>
         )}
+
         {answer && !editing && (
           <>
-            <span className={`badge badge-${answer.status}`}>{answer.status}</span>
-            <span className="meta">Version {answer.version}</span>
+            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '0.75rem' }}>
+              <span className={`badge badge-${answer.status}`}>{answer.status.replace('_', ' ')}</span>
+              <span className="meta">Version {answer.version}</span>
+            </div>
             <div className="answer-content" dangerouslySetInnerHTML={{ __html: answer.content || '' }} />
+
             {answer.attachments && answer.attachments.length > 0 && (
-              <div className="attachments-section">
+              <div className="attachments-section mt-3">
                 <h4>Attached Files:</h4>
                 <div className="attachments-list">
-                  {answer.attachments.map((attachment, index) => (
-                    <div key={index} className="attachment-item">
-                      <a 
-                        href={`/uploads/${attachment.path}`} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="attachment-link"
-                      >
-                        📎 {attachment.originalName} ({(attachment.size / 1024).toFixed(2)} KB)
+                  {answer.attachments.map((att, i) => (
+                    <div key={i} className="attachment-item">
+                      <a href={`/uploads/${att.path}`} target="_blank" rel="noopener noreferrer" className="attachment-link">
+                        📎 {att.originalName} ({(att.size / 1024).toFixed(2)} KB)
                       </a>
                     </div>
                   ))}
                 </div>
               </div>
             )}
+
             {canEdit && (
-              <button type="button" className="btn btn-secondary" onClick={() => setEditing(true)}>
-                Update (requested)
+              <button type="button" className="btn btn-secondary" style={{ marginTop: '1rem' }} onClick={() => setEditing(true)}>
+                ✏️ Update Answer
               </button>
             )}
           </>
         )}
+
         {editing && (
           <form onSubmit={handleSubmit}>
             <RichTextEditor
               value={content}
               onChange={setContent}
               disabled={!canEdit}
-              placeholder="Write your answer here..."
+              placeholder="Write your answer here…"
             />
-            
-            {/* File Upload Section */}
-            <div className="file-upload-section mt-3">
-              <label className="file-upload-label">
-                <input
-                  type="file"
-                  multiple
-                  onChange={handleFileChange}
-                  accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif,.webp"
-                  disabled={!canEdit}
-                />
-                <span className="btn btn-outline">Choose Files to Attach</span>
-              </label>
-              <small className="text-muted d-block mt-1">
-                Support: Images, PDF, Word, Excel, PowerPoint, Text files (Max 10MB each, up to 5 files)
-              </small>
+
+            {/* Drag-drop upload zone */}
+            <div
+              className={`upload-zone mt-3${dragOver ? ' dragover' : ''}`}
+              onClick={() => fileInputRef.current?.click()}
+              onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+              onDragLeave={() => setDragOver(false)}
+              onDrop={handleDrop}
+            >
+              <span className="upload-zone-icon">📁</span>
+              <strong>Drag & drop files here</strong>
+              <p style={{ fontSize: '0.8rem', marginTop: '0.25rem' }}>
+                or <u>click to browse</u> — PDF, Word, Excel, images (max 10 MB each)
+              </p>
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                onChange={handleFileChange}
+                accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif,.webp"
+                disabled={!canEdit}
+              />
             </div>
-            
-            {/* Preview Selected Files */}
+
             {previewFiles.length > 0 && (
-              <div className="attachments-preview mt-3">
-                <h4>Attached Files:</h4>
+              <div className="attachments-section mt-3">
+                <h4>Files to attach:</h4>
                 <div className="attachments-list">
                   {previewFiles.map((file, index) => (
                     <div key={index} className="attachment-item">
                       <span className="attachment-info">
-                        📎 {file.originalName} ({file.isNew ? (file.size / 1024).toFixed(2) + ' KB' : (file.size / 1024).toFixed(2) + ' KB'})
+                        📎 {file.originalName} ({(file.size / 1024).toFixed(2)} KB)
+                        {file.isNew && <span style={{ marginLeft: '0.4rem', color: 'var(--indigo)', fontSize: '0.75rem' }}>NEW</span>}
                       </span>
                       <button
                         type="button"
-                        className="btn btn-sm btn-danger ml-2"
-                        onClick={() => removeFile(index, file.isNew)}
+                        className="btn btn-danger"
+                        style={{ padding: '0.2rem 0.6rem', fontSize: '0.8rem' }}
+                        onClick={() => removeFile(index)}
                       >
                         Remove
                       </button>
@@ -219,13 +284,13 @@ export default function QuestionDetail() {
                 </div>
               </div>
             )}
-            
+
             <div className="form-actions">
-              <button type="button" className="btn btn-secondary" onClick={() => setEditing(false)}>
+              <button type="button" className="btn btn-secondary" onClick={() => { setEditing(false); setFiles([]); }}>
                 Cancel
               </button>
               <button type="submit" className="btn btn-primary" disabled={submitting || !canEdit}>
-                {answer ? 'Update' : 'Submit'} Answer
+                {submitting ? 'Saving…' : (answer ? 'Update' : 'Submit') + ' Answer'}
               </button>
             </div>
           </form>
