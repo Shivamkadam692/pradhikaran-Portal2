@@ -265,7 +265,14 @@ function QuestionList() {
                   ))}
                 </div>
               )}
-              <span className="meta">🏢 {dept}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                <span className="meta">🏢 {dept}</span>
+                {q.createdAt && (
+                  <span className="meta">
+                    🕐 {new Date(q.createdAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                )}
+              </div>
             </div>
           );
         })}
