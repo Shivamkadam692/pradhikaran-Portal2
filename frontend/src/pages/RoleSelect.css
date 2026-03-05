@@ -17,15 +17,13 @@
   font-size: 1.75rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--blue, #EA580C);
+  /* Orange title */
 }
 
 .role-select__subtitle {
   font-size: 1rem;
-  color: var(--page-text-muted, #64748b);
+  color: var(--page-text-muted);
 }
 
 .role-select__grid {
@@ -41,14 +39,20 @@
   animation: roleCardIn 0.35s ease backwards;
 }
 
-.role-select__grid .role-card:nth-child(1) { animation-delay: 0.05s; }
-.role-select__grid .role-card:nth-child(2) { animation-delay: 0.1s; }
+.role-select__grid .role-card:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.role-select__grid .role-card:nth-child(2) {
+  animation-delay: 0.1s;
+}
 
 @keyframes roleCardIn {
   from {
     opacity: 0;
     transform: translateY(12px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -61,35 +65,27 @@
   align-items: center;
   text-align: center;
   padding: 2rem 1.5rem;
-  background: var(--page-bg, #fff);
-  border: 2px solid var(--page-border, #e2e8f0);
-  border-radius: var(--radius, 16px);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  background: #FFFFFF;
+  border: 1px solid var(--page-border);
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(234, 88, 12, 0.02);
   text-decoration: none;
-  color: var(--page-text, #1e293b);
-  transition: transform 250ms ease, box-shadow 250ms ease, border-color 250ms ease;
+  color: var(--page-text);
+  transition: all 0.15s ease;
 }
 
 .role-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(30, 58, 138, 0.12);
-  border-color: var(--indigo);
-}
-
-.role-card:focus {
-  outline: none;
-  border-color: var(--indigo);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
-}
-
-.role-card:focus:not(:focus-visible) {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(234, 88, 12, 0.05);
+  border-color: var(--blue);
+  /* Orange hover border */
 }
 
 .role-card:focus-visible {
   outline: none;
-  border-color: var(--indigo);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.15);
+  /* Orange focus ring */
 }
 
 .role-card__icon-wrap {
@@ -100,16 +96,10 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 1.25rem;
-}
-
-.role-card__icon-wrap--pradhikaran {
-  background: linear-gradient(135deg, rgba(30, 58, 138, 0.12) 0%, rgba(99, 102, 241, 0.12) 100%);
-  color: var(--blue, #1E3A8A);
-}
-
-.role-card__icon-wrap--department {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(15, 23, 42, 0.08) 100%);
-  color: var(--indigo, #6366F1);
+  background: #FFF7ED;
+  /* Peach background for icon */
+  color: var(--blue);
+  border: 1px solid var(--page-border);
 }
 
 .role-card__icon {
@@ -120,12 +110,12 @@
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: var(--page-text, #1e293b);
+  color: var(--page-text);
 }
 
 .role-card__desc {
   font-size: 0.9375rem;
-  color: var(--page-text-muted, #64748b);
+  color: var(--page-text-muted);
   line-height: 1.5;
   margin-bottom: 1rem;
   flex: 1;
@@ -134,18 +124,19 @@
 .role-card__cta {
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--indigo);
+  color: var(--blue);
+  /* Orange CTA text */
 }
 
 .role-select__admin-hint {
   text-align: center;
   margin-top: 2rem;
   font-size: 0.8125rem;
-  color: var(--page-text-muted, #64748b);
+  color: var(--page-text-muted);
 }
 
 .auth-loading {
-  color: var(--page-text-muted, #64748b);
+  color: var(--page-text-muted);
 }
 
 @media (max-width: 640px) {

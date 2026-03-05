@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, History, Trash2, Key, Inbox, ShieldAlert } from 'lucide-react';
+import { LayoutDashboard, History, Trash2, Key, Inbox, ShieldAlert, ListChecks } from 'lucide-react';
 import './Layout.css';
 export default function Layout() {
   const { user, logout } = useAuth();
@@ -58,6 +58,10 @@ export default function Layout() {
               <NavLink to="/pradhikaran/senate-inbox" className={({ isActive }) => (isActive ? 'active' : '')}>
                 <Inbox size={18} />
                 <span>Senate Questions</span>
+              </NavLink>
+              <NavLink to="/pradhikaran/finalized-manager" className={({ isActive }) => (isActive ? 'active' : '')}>
+                <ListChecks size={18} />
+                <span>Finalized</span>
               </NavLink>
             </>
           )}

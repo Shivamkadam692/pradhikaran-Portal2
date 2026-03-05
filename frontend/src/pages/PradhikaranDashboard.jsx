@@ -8,6 +8,7 @@ import './Dashboard.css';
 import DepartmentsOverview from './DepartmentsOverview';
 import DepartmentDetails from './DepartmentDetails';
 import PradhikaranTrash from './PradhikaranTrash';
+import FinalizedQuestionsManager from './FinalizedQuestionsManager';
 
 /* ── helpers ── */
 function DeadlineChip({ deadline }) {
@@ -460,6 +461,7 @@ export default function PradhikaranDashboard() {
     <Routes>
       <Route index element={<QuestionList />} />
       <Route path="trash" element={<PradhikaranTrash />} />
+      <Route path="finalized-manager" element={<FinalizedQuestionsManager />} />
       <Route path="departments" element={<DepartmentsOverview />} />
       <Route path="departments/:id" element={<DepartmentDetails />} />
       <Route path="history" element={<History />} />
