@@ -3,4 +3,6 @@ module.exports = {
   Question: require('./Question'),
   Answer: require('./Answer'),
   ActivityLog: require('./ActivityLog'),
+  Report: require('./Report'),
+  TimeWindow: require('./TimeWindow'),
 };

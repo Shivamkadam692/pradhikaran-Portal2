@@ -481,7 +481,275 @@ const buildDepartmentPdf = async (userId) => {
   return htmlToPdf(html);
 };
 
+/* ─────────────────────────────────────────────────────────────
+   R1 — All received senate questions report (all statuses)
+   ───────────────────────────────────────────────────────────── */
+
+const buildR1Html = (questions) => {
+    const rows = questions.length === 0
+    ? '<p class="empty-note">कोणतेही प्रश्न नाहीत.</p>'
+    : questions.map((q, i) => {
+        const creator = esc(q.createdBy?.name || q.createdBy?.email || '—');
+        const pStyle = PRIORITY_STYLES[q.priority] || '';
+        const auditLabel = (q.auditStatus || 'pending').replace(/_/g, ' ');
+        const auditStyle = STATUS_STYLES[q.auditStatus] || STATUS_STYLES['pending_review'] || '';
+        return `
+          <div class="answer-card" style="background:#F8FAFC;margin-bottom:14px">
+            <div class="answer-card-header">
+              <div>
+                <div class="dept">${i + 1}.&nbsp;&nbsp;${esc(q.title)}</div>
+                <div class="vmeta">${creator} &nbsp;·&nbsp; ${fmtDate(q.createdAt)}</div>
+              </div>
+              <div>
+                ${badge(auditLabel, auditStyle)}
+                ${q.priority ? badge(q.priority, pStyle) : ''}
+              </div>
+            </div>
+            <div style="padding:10px 14px 14px">
+              <div class="description-text">${esc(stripHtml(q.description))}</div>
+              ${q.tags?.length ? `<div style="margin-top:6px">${q.tags.map(t => `<span class="badge" style="background:#EEF2FF;color:#4338CA">${esc(t)}</span>`).join(' ')}</div>` : ''}
+            </div>
+          </div>`;
+      }).join('');
+
+  return `<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8"/>
+  <title>R1 — प्राप्त प्रश्न अहवाल</title>
+  <style>${BASE_CSS}</style>
+</head>
+<body>
+  <div class="page-header">
+    <div>
+      <h1>R1 — प्राप्त प्रश्न अहवाल</h1>
+      <div class="meta">तयार केले: ${fmtDate(new Date())}</div>
+    </div>
+    <div style="font-size:9pt;opacity:0.8">Pradhikaran Portal</div>
+  </div>
+  <div class="content">
+    <div class="section">
+      <div class="section-title">सर्व प्राप्त प्रश्न (${questions.length})</div>
+      ${rows}
+    </div>
+  </div>
+  <div class="footer">
+    <span>Pradhikaran Portal — गोपनीय</span>
+    <span>R1 Report</span>
+  </div>
+</body>
+</html>`;
+};
+
+const buildR1Pdf = async () => {
+  const User = require('../models/User');
+  const senateUsers = await User.find({ role: 'SENATE', isDeleted: { $ne: true } }).select('_id').lean();
+  const senateIds = senateUsers.map(u => u._id);
+
+  const questions = await Question.find({
+    createdBy: { $in: senateIds },
+    isDeleted: { $ne: true },
+  })
+    .populate('createdBy', 'name email')
+    .sort({ createdAt: -1 })
+    .lean();
+
+  return htmlToPdf(buildR1Html(questions));
+};
+
+/* ─────────────────────────────────────────────────────────────
+   R2 — Sorted / forwarded questions report
+   ───────────────────────────────────────────────────────────── */
+
+const buildR2Html = (questions) => {
+  const rows = questions.length === 0
+    ? '<p class="empty-note">कोणतेही अग्रेषित प्रश्न नाहीत.</p>'
+    : questions.map((q, i) => {
+        const creator = esc(q.createdBy?.name || q.createdBy?.email || '—');
+        const dept = esc(q.department?.departmentName || q.department?.name || '—');
+        const pStyle = PRIORITY_STYLES[q.priority] || '';
+        const sStyle = STATUS_STYLES[q.status] || '';
+        return `
+          <div class="answer-card" style="background:#F8FAFC;margin-bottom:14px">
+            <div class="answer-card-header">
+              <div>
+                <div class="dept">${i + 1}.&nbsp;&nbsp;${esc(q.title)}</div>
+                <div class="vmeta">${creator} &nbsp;·&nbsp; ${fmtDate(q.createdAt)}</div>
+              </div>
+              <div>
+                ${badge(q.status, sStyle)}
+                ${q.priority ? badge(q.priority, pStyle) : ''}
+              </div>
+            </div>
+            <div style="padding:10px 14px 14px">
+              <div class="description-text">${esc(stripHtml(q.description))}</div>
+              <table class="kv-table" style="margin-top:8px">
+                <tr><td>विभाग:</td><td>${dept}</td></tr>
+                ${q.deadline ? `<tr><td>अंतिम मुदत:</td><td>${fmtDate(q.deadline)}</td></tr>` : ''}
+              </table>
+              ${q.tags?.length ? `<div style="margin-top:6px">${q.tags.map(t => `<span class="badge" style="background:#EEF2FF;color:#4338CA">${esc(t)}</span>`).join(' ')}</div>` : ''}
+            </div>
+          </div>`;
+      }).join('');
+
+  return `<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8"/>
+  <title>R2 — वर्गीकृत प्रश्न अहवाल</title>
+  <style>${BASE_CSS}</style>
+</head>
+<body>
+  <div class="page-header">
+    <div>
+      <h1>R2 — वर्गीकृत प्रश्न अहवाल</h1>
+      <div class="meta">तयार केले: ${fmtDate(new Date())}</div>
+    </div>
+    <div style="font-size:9pt;opacity:0.8">Pradhikaran Portal</div>
+  </div>
+  <div class="content">
+    <div class="section">
+      <div class="section-title">प्रधिकरणाला पाठवलेले प्रश्न (${questions.length})</div>
+      ${rows}
+    </div>
+  </div>
+  <div class="footer">
+    <span>Pradhikaran Portal — गोपनीय</span>
+    <span>R2 Report</span>
+  </div>
+</body>
+</html>`;
+};
+
+const buildR2Pdf = async () => {
+  const questions = await Question.find({
+    isDeleted: { $ne: true },
+    auditStatus: 'forwarded',
+  })
+    .populate('createdBy', 'name email')
+    .populate('department', 'name departmentName')
+    .sort({ createdAt: -1 })
+    .lean();
+
+  return htmlToPdf(buildR2Html(questions));
+};
+
+/* ─────────────────────────────────────────────────────────────
+   R3 — Finalized questions with accepted answers report
+   ───────────────────────────────────────────────────────────── */
+
+const buildR3Html = (questions, answersByQ) => {
+  const rows = questions.length === 0
+    ? '<p class="empty-note">कोणतेही अंतिम प्रश्न नाहीत.</p>'
+    : questions.map((q, i) => {
+        const dept = esc(q.department?.departmentName || q.department?.name || '—');
+        const creator = esc(q.createdBy?.name || q.createdBy?.email || '—');
+        const answers = answersByQ[q._id.toString()] || [];
+
+        const answersHtml = answers.length === 0
+          ? '<p style="color:#94A3B8;font-size:9.5pt;margin-top:6px">अद्याप कोणतेही स्वीकृत उत्तर नाही.</p>'
+          : answers.map((a, ai) => {
+              const aDept = esc(a.department?.departmentName || a.department?.name || '—');
+              const aStyle = STATUS_STYLES[a.status] || '';
+              const aBg = ANSWER_BG[a.status] || '#F8FAFC';
+              const content = esc(stripHtml(a.content));
+              return `
+                <div style="margin-top:8px;padding:10px 12px;background:${aBg};border-radius:8px;border:1px solid #E2E8F0">
+                  <div style="font-size:8.5pt;font-weight:700;margin-bottom:5px">
+                    ${badge(a.status.replace(/_/g, ' '), aStyle)}
+                    <span style="color:#64748b">${aDept} &nbsp;·&nbsp; v${a.version} &nbsp;·&nbsp; ${fmtDate(a.updatedAt || a.createdAt)}</span>
+                  </div>
+                  <div style="white-space:pre-wrap;font-size:10.5pt;line-height:1.7">${content}</div>
+                </div>`;
+            }).join('');
+
+        const finalHtml = q.finalAnswer ? `
+          <div style="margin-top:10px;padding:10px 12px;background:#ECFDF5;border-radius:8px;border:1px solid #6EE7B7">
+            <div style="font-size:9pt;font-weight:700;color:#065F46;margin-bottom:5px">अंतिम उत्तर (प्रकाशित)</div>
+            <div style="white-space:pre-wrap;font-size:10.5pt;line-height:1.7;color:#065F46">${esc(stripHtml(q.finalAnswer))}</div>
+            <p style="font-size:8.5pt;color:#64748b;margin-top:6px">प्रकाशित: ${fmtDate(q.finalAnswerPublishedAt)}</p>
+          </div>` : '';
+
+        return `
+          <div class="answer-card" style="background:#F8FAFC;margin-bottom:18px">
+            <div class="answer-card-header">
+              <div>
+                <div class="dept">${i + 1}.&nbsp;&nbsp;${esc(q.title)}</div>
+                <div class="vmeta">${creator} &nbsp;·&nbsp; विभाग: ${dept} &nbsp;·&nbsp; ${fmtDate(q.createdAt)}</div>
+              </div>
+              ${badge('finalized', STATUS_STYLES['finalized'] || '')}
+            </div>
+            <div style="padding:10px 14px 14px">
+              <div class="description-text">${esc(stripHtml(q.description))}</div>
+              ${finalHtml}
+              <div style="margin-top:10px">
+                <div style="font-size:9.5pt;font-weight:700;color:#1E3A8A;margin-bottom:4px">स्वीकृत उत्तरे (${answers.length})</div>
+                ${answersHtml}
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+
+  return `<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8"/>
+  <title>R3 — अंतिम प्रश्न व उत्तरे अहवाल</title>
+  <style>${BASE_CSS}</style>
+</head>
+<body>
+  <div class="page-header">
+    <div>
+      <h1>R3 — अंतिम प्रश्न व उत्तरे अहवाल</h1>
+      <div class="meta">तयार केले: ${fmtDate(new Date())}</div>
+    </div>
+    <div style="font-size:9pt;opacity:0.8">Pradhikaran Portal</div>
+  </div>
+  <div class="content">
+    <div class="section">
+      <div class="section-title">अंतिम प्रश्न व स्वीकृत उत्तरे (${questions.length})</div>
+      ${rows}
+    </div>
+  </div>
+  <div class="footer">
+    <span>Pradhikaran Portal — गोपनीय</span>
+    <span>R3 Report</span>
+  </div>
+</body>
+</html>`;
+};
+
+const buildR3Pdf = async () => {
+  const questions = await Question.find({
+    isDeleted: { $ne: true },
+    status: 'finalized',
+  })
+    .populate('createdBy', 'name email')
+    .populate('department', 'name departmentName')
+    .sort({ createdAt: -1 })
+    .lean();
+
+  const qIds = questions.map(q => q._id);
+  const answers = await Answer.find({
+    question: { $in: qIds },
+    isDeleted: { $ne: true },
+    status: 'accepted',
+  })
+    .populate('department', 'name departmentName')
+    .sort({ createdAt: -1 })
+    .lean();
+
+  const answersByQ = {};
+  answers.forEach(a => {
+    const key = a.question.toString();
+    if (!answersByQ[key]) answersByQ[key] = [];
+    answersByQ[key].push(a);
+  });
+
+  return htmlToPdf(buildR3Html(questions, answersByQ));
+};
+
 /* Gracefully close the browser on process exit */
 process.on('exit', () => { if (_browser) _browser.close(); });
 
-module.exports = { buildQuestionPdf, buildDepartmentPdf };
+module.exports = { buildQuestionPdf, buildDepartmentPdf, buildR1Pdf, buildR2Pdf, buildR3Pdf };

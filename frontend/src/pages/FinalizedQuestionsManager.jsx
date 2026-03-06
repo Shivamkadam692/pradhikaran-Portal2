@@ -42,7 +42,7 @@ function buildExportHTML(questions) {
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<title>Finalized Questions Export — Pradhikaran Portal</title>
+<title>Report R4 — Finalized Questions Manager</title>
 <style>
   body { font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; margin: 0; padding: 32px; }
   h1  { font-size: 22px; margin-bottom: 4px; }
@@ -54,7 +54,7 @@ function buildExportHTML(questions) {
 </style>
 </head>
 <body>
-  <h1>📋 Finalized Questions — Pradhikaran Portal</h1>
+  <h1>📋 Report R4 — Finalized Questions Manager</h1>
   <p class="sub">Exported on ${new Date().toLocaleString('en-IN')} &nbsp;·&nbsp; ${questions.length} question(s)</p>
   ${rows}
 </body>
@@ -81,7 +81,7 @@ function exportAsWord(questions) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `finalized-questions-${Date.now()}.doc`;
+    a.download = `report-r4-${Date.now()}.doc`;
     a.click();
     URL.revokeObjectURL(url);
 }

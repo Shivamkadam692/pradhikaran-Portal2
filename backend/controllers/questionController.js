@@ -2,9 +2,26 @@ const questionService = require('../services/questionService');
 const answerService = require('../services/answerService');
 const activityLogService = require('../services/activityLogService');
 const { ROLES, QUESTION_STATUS } = require('../config/constants');
+const TimeWindow = require('../models/TimeWindow');
 
 const create = async (req, res, next) => {
   try {
+    // Enforce time window for Senate users
+    if (req.user.role === ROLES.SENATE) {
+      const now = new Date();
+      const activeWindow = await TimeWindow.findOne({
+        type: 'question',
+        isActive: true,
+        startDate: { $lte: now },
+        endDate: { $gte: now },
+      });
+      if (!activeWindow) {
+        return res.status(403).json({
+          success: false,
+          message: 'Question submission is not open at this time. Please check the active time window.',
+        });
+      }
+    }
     if (req.user.role === ROLES.PRADHIKARAN) {
       if (!req.body.department) {
         return res

@@ -22,6 +22,8 @@ const activityLogRoutes = require('./routes/activityLogRoutes');
 const exportRoutes = require('./routes/exportRoutes');
 const superAdminRoutes = require('./routes/superAdminRoutes');
 const auditRoutes = require('./routes/auditRoutes');
+const reportRoutes = require('./routes/reportRoutes');
+const timeWindowRoutes = require('./routes/timeWindowRoutes');
 const { authenticate } = require('./middleware/auth');
 const { superAdminRoute, requireSuperAdminPath } = require('./middleware/superAdminRoute');
 
@@ -72,6 +74,8 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/activity-logs', activityLogRoutes);
 app.use('/api/export', exportRoutes);
 app.use('/api/audit', auditRoutes);
+app.use('/api/reports', reportRoutes);
+app.use('/api/time-windows', timeWindowRoutes);
 
 app.get('/api/super-admin/health', requireSuperAdminPath, (req, res) => {
   res.json({ success: true, message: 'Super Admin route accessible' });

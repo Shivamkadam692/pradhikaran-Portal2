@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, History, Trash2, Key, Inbox, ShieldAlert, ListChecks } from 'lucide-react';
+import { LayoutDashboard, History, Trash2, Key, Inbox, ShieldAlert, ListChecks, FileText, Clock } from 'lucide-react';
 import './Layout.css';
 export default function Layout() {
   const { user, logout } = useAuth();
@@ -62,6 +62,10 @@ export default function Layout() {
               <NavLink to="/pradhikaran/finalized-manager" className={({ isActive }) => (isActive ? 'active' : '')}>
                 <ListChecks size={18} />
                 <span>Finalized</span>
+              </NavLink>
+              <NavLink to="/pradhikaran/reports" className={({ isActive }) => (isActive ? 'active' : '')}>
+                <FileText size={18} />
+                <span>Reports</span>
               </NavLink>
             </>
           )}

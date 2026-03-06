@@ -9,6 +9,8 @@ import DepartmentsOverview from './DepartmentsOverview';
 import DepartmentDetails from './DepartmentDetails';
 import PradhikaranTrash from './PradhikaranTrash';
 import FinalizedQuestionsManager from './FinalizedQuestionsManager';
+import ReportsManager from './ReportsManager';
+import TimeWindowManager from './TimeWindowManager';
 
 /* ── helpers ── */
 function DeadlineChip({ deadline }) {
@@ -124,6 +126,9 @@ function QuestionList() {
           </button>
           <button type="button" className="btn btn-outline" onClick={() => navigate('/pradhikaran/departments')}>
             Departments
+          </button>
+          <button type="button" className="btn btn-outline" onClick={() => navigate('/pradhikaran/time-windows')}>
+            ⏰ Time Windows
           </button>
         </div>
       </div>
@@ -462,11 +467,13 @@ export default function PradhikaranDashboard() {
       <Route index element={<QuestionList />} />
       <Route path="trash" element={<PradhikaranTrash />} />
       <Route path="finalized-manager" element={<FinalizedQuestionsManager />} />
+      <Route path="reports" element={<ReportsManager />} />
       <Route path="departments" element={<DepartmentsOverview />} />
       <Route path="departments/:id" element={<DepartmentDetails />} />
       <Route path="history" element={<History />} />
       <Route path="permissions" element={<Permissions />} />
       <Route path="senate-inbox" element={<SenateInbox />} />
+      <Route path="time-windows" element={<TimeWindowManager />} />
     </Routes>
   );
 }

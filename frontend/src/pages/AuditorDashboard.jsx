@@ -295,14 +295,77 @@ function DraftsList() {
 
 export default function AuditorDashboard() {
   const [tab, setTab] = useState('pending');
+  const [generating, setGenerating] = useState('');
+  const [sendingR1, setSendingR1] = useState(false);
+
+  const handleDownload = async (reportKey, endpoint) => {
+    setGenerating(reportKey);
+    try {
+      const response = await api.get(endpoint, { responseType: 'blob' });
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${reportKey}-report-${new Date().toISOString().slice(0, 10)}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (e) {
+      alert(e.response?.data?.message || `Failed to generate ${reportKey.toUpperCase()} report`);
+    } finally {
+      setGenerating('');
+    }
+  };
+
+  const handleSendR1 = async () => {
+    setSendingR1(true);
+    try {
+      await api.post('/audit/send-r1');
+      alert('R1 report sent to Pradhikaran successfully!');
+    } catch (e) {
+      alert(e.response?.data?.message || 'Failed to send R1 report');
+    } finally {
+      setSendingR1(false);
+    }
+  };
+
   return (
     <div>
       <div className="section-header">
         <h2>Auditor</h2>
-        <div className="dashboard-actions">
+        <div className="dashboard-actions" style={{ flexWrap: 'wrap', gap: '0.5rem' }}>
           <button type="button" className={`btn ${tab === 'pending' ? 'btn-primary' : 'btn-outline'}`} onClick={() => setTab('pending')}>Pending</button>
           <button type="button" className={`btn ${tab === 'approved' ? 'btn-primary' : 'btn-outline'}`} onClick={() => setTab('approved')}>Approved</button>
           <button type="button" className={`btn ${tab === 'drafts' ? 'btn-primary' : 'btn-outline'}`} onClick={() => setTab('drafts')}>Drafts</button>
+          <button
+            type="button"
+            className="btn btn-outline"
+            disabled={!!generating}
+            onClick={() => handleDownload('r1', '/export/report-r1')}
+            title="Download R1 — All received questions report"
+          >
+            {generating === 'r1' ? '⏳ R1...' : '📥 R1 Report'}
+          </button>
+          <button
+            type="button"
+            className="btn btn-outline"
+            disabled={!!generating}
+            onClick={() => handleDownload('r2', '/export/report-r2')}
+            title="Download R2 — Sorted questions report"
+          >
+            {generating === 'r2' ? '⏳ R2...' : '📊 R2 Report'}
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            disabled={sendingR1}
+            onClick={handleSendR1}
+            title="Send R1 report to Pradhikaran"
+            style={{ background: '#10B981', borderColor: '#10B981' }}
+          >
+            {sendingR1 ? '⏳ Sending...' : '📨 Send R1 to Pradhikaran'}
+          </button>
         </div>
       </div>
       {tab === 'pending' && <PendingList />}

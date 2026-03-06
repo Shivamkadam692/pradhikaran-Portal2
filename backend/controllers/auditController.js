@@ -1,4 +1,6 @@
 const auditService = require('../services/auditService');
+const Report = require('../models/Report');
+const { buildR1Pdf } = require('../exports/pdfExport');
 
 const listPending = async (req, res, next) => {
   try {
@@ -80,6 +82,20 @@ const forward = async (req, res, next) => {
   }
 };
 
+const sendR1 = async (req, res, next) => {
+  try {
+    const pdfBuffer = await buildR1Pdf();
+    await Report.create({
+      reportType: 'R1',
+      sentBy: req.user._id,
+      pdfBuffer,
+    });
+    res.json({ success: true, message: 'R1 report sent to Pradhikaran successfully' });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   listPending,
   listApproved,
@@ -88,4 +104,5 @@ module.exports = {
   reject,
   resubmit,
   forward,
+  sendR1,
 };

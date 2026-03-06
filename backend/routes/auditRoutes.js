@@ -39,4 +39,6 @@ router.post(
   controller.forward
 );
 
+router.post('/send-r1', controller.sendR1);
+
 module.exports = router;

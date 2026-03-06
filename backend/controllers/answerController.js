@@ -1,9 +1,25 @@
 const answerService = require('../services/answerService');
 const { QUESTION_STATUS } = require('../config/constants');
+const TimeWindow = require('../models/TimeWindow');
 const path = require('path');
 
 const submit = async (req, res, next) => {
   try {
+    // Enforce time window for answer submission
+    const now = new Date();
+    const activeWindow = await TimeWindow.findOne({
+      type: 'answer',
+      isActive: true,
+      startDate: { $lte: now },
+      endDate: { $gte: now },
+    });
+    if (!activeWindow) {
+      return res.status(403).json({
+        success: false,
+        message: 'Answer submission is not open at this time. Please check the active time window.',
+      });
+    }
+
     // Process uploaded files if any
     const attachments = [];
     if (req.files && req.files.length > 0) {

@@ -1,4 +1,4 @@
-const { buildQuestionPdf, buildDepartmentPdf } = require('../exports/pdfExport');
+const { buildQuestionPdf, buildDepartmentPdf, buildR1Pdf, buildR2Pdf, buildR3Pdf } = require('../exports/pdfExport');
 const { ROLES } = require('../config/constants');
 
 const exportQuestion = async (req, res, next) => {
@@ -33,4 +33,38 @@ const exportDepartment = async (req, res, next) => {
   }
 };
 
-module.exports = { exportQuestion, exportDepartment };
+const exportR1 = async (req, res, next) => {
+  try {
+    const buffer = await buildR1Pdf();
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=report-R1-${Date.now()}.pdf`);
+    res.send(buffer);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const exportR2 = async (req, res, next) => {
+  try {
+    const buffer = await buildR2Pdf();
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=report-R2-${Date.now()}.pdf`);
+    res.send(buffer);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const exportR3 = async (req, res, next) => {
+  try {
+    const buffer = await buildR3Pdf();
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=report-R3-${Date.now()}.pdf`);
+    res.send(buffer);
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { exportQuestion, exportDepartment, exportR1, exportR2, exportR3 };
+
