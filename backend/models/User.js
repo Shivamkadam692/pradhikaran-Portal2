@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema(
       enum: Object.values(ROLES),
     },
     departmentName: { type: String, trim: true },
+    subDepartmentName: { type: String, trim: true },
     isApproved: { type: Boolean, default: false },
     registrationRequest: {
       type: String,

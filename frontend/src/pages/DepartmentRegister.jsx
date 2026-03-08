@@ -11,6 +11,7 @@ export default function DepartmentRegister() {
   const [password, setPassword] = useState('');
   const [departmentName, setDepartmentName] = useState('');
   const [customDepartment, setCustomDepartment] = useState('');
+  const [customSubDepartment, setCustomSubDepartment] = useState('');
   const [departmentError, setDepartmentError] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -35,9 +36,11 @@ export default function DepartmentRegister() {
       return;
     }
     const finalDepartment = departmentName === 'Other' ? customDepartment.trim() : departmentName;
+    const finalSubDepartment = departmentName === 'Other' ? customSubDepartment.trim() : '';
+
     setLoading(true);
     try {
-      await register(name, email, password, finalDepartment);
+      await register(name, email, password, finalDepartment, finalSubDepartment);
       setSuccess(true);
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
@@ -107,20 +110,34 @@ export default function DepartmentRegister() {
             />
           </div>
           {departmentName === 'Other' && (
-            <label htmlFor="dept-reg-custom">
-              Specify Department
-              <input
-                id="dept-reg-custom"
-                type="text"
-                value={customDepartment}
-                onChange={(e) => {
-                  setCustomDepartment(e.target.value);
-                  setDepartmentError('');
-                }}
-                placeholder="Enter department name"
-                required
-              />
-            </label>
+            <>
+              <label htmlFor="dept-reg-custom">
+                Specify Department
+                <input
+                  id="dept-reg-custom"
+                  type="text"
+                  value={customDepartment}
+                  onChange={(e) => {
+                    setCustomDepartment(e.target.value);
+                    setDepartmentError('');
+                  }}
+                  placeholder="Enter department name"
+                  required
+                />
+              </label>
+              <label htmlFor="dept-reg-sub-custom">
+                Specify Sub Department (Optional)
+                <input
+                  id="dept-reg-sub-custom"
+                  type="text"
+                  value={customSubDepartment}
+                  onChange={(e) => {
+                    setCustomSubDepartment(e.target.value);
+                  }}
+                  placeholder="Enter sub department name"
+                />
+              </label>
+            </>
           )}
           <label htmlFor="dept-reg-password">
             Password

@@ -103,11 +103,21 @@ const logout = (req, res) => {
 
 const registerDepartment = async (req, res, next) => {
   try {
-    const { name, email, password, departmentName } = req.body;
+    const { name, email, password, departmentName, subDepartmentName } = req.body;
     const trimmedDept = typeof departmentName === 'string' ? departmentName.trim() : '';
+    const trimmedSubDept = typeof subDepartmentName === 'string' ? subDepartmentName.trim() : '';
+
     if (!trimmedDept) {
       return res.status(400).json({ success: false, message: 'Department selection is required' });
     }
+    
+    if (!ALLOWED_DEPARTMENT_NAMES.includes(trimmedDept)) {
+      return res.status(400).json({
+        success: false,
+        message: `Department must be one of: ${ALLOWED_DEPARTMENT_NAMES.join(', ')}`,
+      });
+    }
+
     const existing = await User.findOne({ email, isDeleted: { $ne: true } });
     if (existing) {
       return res.status(400).json({ success: false, message: 'Email already registered' });
@@ -117,6 +127,7 @@ const registerDepartment = async (req, res, next) => {
       email,
       password,
       departmentName: trimmedDept,
+      subDepartmentName: trimmedSubDept,
       role: ROLES.DEPARTMENT,
       isApproved: false,
       registrationRequest: 'pending',
@@ -145,7 +156,7 @@ const getPublicDepartments = async (req, res, next) => {
   try {
     const filter = { role: ROLES.DEPARTMENT, isApproved: true, isDeleted: { $ne: true } };
     const departments = await User.find(filter)
-      .select('name departmentName')
+      .select('name departmentName subDepartmentName')
       .sort({ createdAt: -1 })
       .lean();
     res.json({ success: true, data: departments });

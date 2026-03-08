@@ -15,30 +15,30 @@ export default function DepartmentDetails() {
     try {
       setLoading(true);
       setError('');
-      
+
       // Load all departments first
       const deptRes = await api.get('/users/departments');
       const allDepartments = Array.isArray(deptRes.data.data) ? deptRes.data.data : [];
-      
+
       // Find the specific department by ID
       const foundDepartment = allDepartments.find(dept => dept._id === id);
-      
+
       if (!foundDepartment) {
         setError(`Department with ID ${id} not found`);
         setLoading(false);
         return;
       }
-      
+
       setDepartment(foundDepartment);
-      
+
       // Load department's answered questions
       const answersRes = await api.get(`/answers/department/${id}`);
       const answers = Array.isArray(answersRes.data.data) ? answersRes.data.data : [];
-      
+
       // Extract unique questions from answers
       const uniqueQuestions = [];
       const seen = new Set();
-      
+
       for (const answer of answers) {
         if (answer.question && answer.question._id && !seen.has(answer.question._id)) {
           seen.add(answer.question._id);
@@ -50,7 +50,7 @@ export default function DepartmentDetails() {
           });
         }
       }
-      
+
       setQuestions(uniqueQuestions);
     } catch (e) {
       console.error('Error loading department details:', e);
@@ -98,12 +98,12 @@ export default function DepartmentDetails() {
   };
 
   if (loading) return <div className="glass p-4">Loading department details...</div>;
-  
+
   if (error) return (
     <div className="glass p-4">
       <div className="auth-error">{error}</div>
-      <button 
-        type="button" 
+      <button
+        type="button"
         className="btn btn-secondary mt-3"
         onClick={() => navigate('/pradhikaran/departments')}
       >
@@ -115,8 +115,8 @@ export default function DepartmentDetails() {
   if (!department) return (
     <div className="glass p-4">
       <div className="auth-error">Department not found</div>
-      <button 
-        type="button" 
+      <button
+        type="button"
         className="btn btn-secondary mt-3"
         onClick={() => navigate('/pradhikaran/departments')}
       >
@@ -128,8 +128,8 @@ export default function DepartmentDetails() {
   return (
     <div className="dashboard-section">
       <div className="header-actions mb-4">
-        <button 
-          type="button" 
+        <button
+          type="button"
           className="btn btn-secondary"
           onClick={() => navigate('/pradhikaran/departments')}
         >
@@ -140,11 +140,14 @@ export default function DepartmentDetails() {
       <div className="glass p-4 mb-4">
         <div className="d-flex justify-content-between align-items-start">
           <div>
-            <h1 className="mb-3">{department.departmentName || department.name || 'Department'}</h1>
+            <h1 className="mb-3">
+              {department.departmentName || department.name || 'Department'}
+              {department.subDepartmentName && ` - ${department.subDepartmentName}`}
+            </h1>
             <div className="department-info">
               <p className="mb-2"><strong>Email:</strong> {department.email}</p>
               <p className="mb-2">
-                <strong>Status:</strong> 
+                <strong>Status:</strong>
                 <span className={`badge ${department.isApproved ? 'badge-success' : 'badge-warning'} ms-2`}>
                   {department.isApproved ? 'Approved' : 'Pending Approval'}
                 </span>
@@ -154,8 +157,8 @@ export default function DepartmentDetails() {
               )}
             </div>
           </div>
-          <button 
-            type="button" 
+          <button
+            type="button"
             className="btn btn-primary"
             onClick={exportDepartmentPdf}
           >
@@ -166,7 +169,7 @@ export default function DepartmentDetails() {
 
       <div className="glass p-4">
         <h2 className="mb-4">Answered Questions ({questions.length})</h2>
-        
+
         {questions.length === 0 ? (
           <div className="text-muted">No answered questions found for this department.</div>
         ) : (
@@ -185,15 +188,15 @@ export default function DepartmentDetails() {
                     </span>
                   </div>
                 </div>
-                
+
                 <p className="text-muted mb-2">{question.description}</p>
-                
+
                 {question.answerDate && (
                   <div className="answer-meta text-muted small">
                     <span>Last updated: {formatDate(question.answerDate)}</span>
                   </div>
                 )}
-                
+
                 <div className="question-actions mt-3">
                   <button
                     type="button"

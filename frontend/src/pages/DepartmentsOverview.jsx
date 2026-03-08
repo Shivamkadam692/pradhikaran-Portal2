@@ -60,7 +60,10 @@ export default function DepartmentsOverview() {
           <div key={d._id} className="glass card card-hover" style={{ cursor: 'pointer' }}>
             <div className="d-flex justify-content-between align-items-start">
               <div onClick={() => navigate(`/pradhikaran/departments/${d._id}`)}>
-                <h4>{d.departmentName || d.name || 'Department'}</h4>
+                <h4>
+                  {d.departmentName || d.name || 'Department'}
+                  {d.subDepartmentName && ` - ${d.subDepartmentName}`}
+                </h4>
                 <p className="text-muted">{d.email}</p>
                 <span className="badge badge-open">{d.isApproved ? 'Approved' : 'Pending'}</span>
               </div>

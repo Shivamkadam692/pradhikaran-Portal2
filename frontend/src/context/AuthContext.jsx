@@ -72,8 +72,8 @@ export function AuthProvider({ children }) {
     return data.data;
   }, []);
 
-  const register = useCallback(async (name, email, password, departmentName) => {
-    await api.post('/auth/register', { name, email, password, departmentName });
+  const register = useCallback(async (name, email, password, departmentName, subDepartmentName) => {
+    await api.post('/auth/register', { name, email, password, departmentName, subDepartmentName });
   }, []);
 
   const logout = useCallback(async () => {
@@ -83,7 +83,7 @@ export function AuthProvider({ children }) {
       setAccessToken(null);
       try {
         localStorage.removeItem('super_admin_access');
-      } catch {}
+      } catch { }
       setUser(null);
     }
   }, []);
