@@ -9,6 +9,18 @@ export const DEPARTMENT_OPTIONS = [
   'Mathematics and Statistics',
   'Pharmacy',
   'Language',
+  'VC Office',
+  'PVC Office',
+  'Exam Department',
+  'Accounts Departments',
+  'NSS Department',
+  'Registrar Office',
+  'Student Development',
+  'Engineering Dept',
+  'Hingoli',
+  'Parbhani',
+  'Latur',
+  'Kinwat',
   'Other',
 ];
 
