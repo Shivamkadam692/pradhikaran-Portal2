@@ -1,6 +1,6 @@
 const { User } = require('../models');
 const { generateAccessToken, generateRefreshToken, verifyRefreshToken } = require('../utils/jwt');
-const { ROLES, ALLOWED_DEPARTMENT_NAMES } = require('../config/constants');
+const { ROLES } = require('../config/constants');
 
 const login = async (req, res, next) => {
   try {
@@ -109,13 +109,6 @@ const registerDepartment = async (req, res, next) => {
 
     if (!trimmedDept) {
       return res.status(400).json({ success: false, message: 'Department selection is required' });
-    }
-    
-    if (!ALLOWED_DEPARTMENT_NAMES.includes(trimmedDept)) {
-      return res.status(400).json({
-        success: false,
-        message: `Department must be one of: ${ALLOWED_DEPARTMENT_NAMES.join(', ')}`,
-      });
     }
 
     const existing = await User.findOne({ email, isDeleted: { $ne: true } });
