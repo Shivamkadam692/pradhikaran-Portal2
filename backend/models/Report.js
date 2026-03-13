@@ -5,7 +5,7 @@ const reportSchema = new mongoose.Schema(
     reportType: {
       type: String,
       required: true,
-      enum: ['R1'],
+      enum: ['R1', 'R2', 'R3', 'R4'],
       default: 'R1',
     },
     sentBy: {

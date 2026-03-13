@@ -36,5 +36,12 @@ router.get(
   exportController.exportR3
 );
 
+router.get(
+  '/report-r4',
+  authorizeRoles(ROLES.PRADHIKARAN),
+  exportController.exportR4
+);
+
 module.exports = router;
+
 
