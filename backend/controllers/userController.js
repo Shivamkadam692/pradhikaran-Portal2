@@ -254,6 +254,25 @@ const listPendingRegistrations = async (req, res, next) => {
   }
 };
 
+const deleteDepartment = async (req, res, next) => {
+  try {
+    const user = await User.findOne({
+      _id: req.params.userId,
+      role: ROLES.DEPARTMENT,
+      isDeleted: { $ne: true },
+    });
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Department account not found' });
+    }
+    user.isDeleted = true;
+    user.isApproved = false;
+    await user.save();
+    res.json({ success: true, message: 'Department account deleted successfully' });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   listPradhikaran,
   createPradhikaran,
@@ -265,4 +284,5 @@ module.exports = {
   createSenate,
   listAuditors,
   createAuditor,
+  deleteDepartment,
 };

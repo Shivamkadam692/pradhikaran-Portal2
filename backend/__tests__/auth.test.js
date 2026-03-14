@@ -34,12 +34,12 @@ describe('Auth', () => {
           name: 'Test Dept',
           email: 'dept@test.com',
           password: 'Password123!',
-          departmentName: 'Computer Science',
+          departmentName: 'Affiliation dept',
         });
       expect(res.status).toBe(201);
       expect(res.body.success).toBe(true);
       expect(res.body.data.user.role).toBe('DEPARTMENT');
-      expect(res.body.data.user.departmentName).toBe('Computer Science');
+      expect(res.body.data.user.departmentName).toBe('Affiliation dept');
       expect(res.body.data.user.isApproved).toBe(false);
     });
 
@@ -76,7 +76,7 @@ describe('Auth', () => {
           name: 'Test Dept',
           email: 'dept4@test.com',
           password: 'Password123!',
-          departmentName: 'Engineering',
+          departmentName: 'InvalidDept',
         });
       expect(res.status).toBe(400);
       expect(res.body.success).toBe(false);
@@ -90,7 +90,7 @@ describe('Auth', () => {
           name: 'Test',
           email: 'invalid',
           password: 'Password123!',
-          departmentName: 'Mathematics and Statistics',
+          departmentName: 'Dean Department',
         });
       expect(res.status).toBe(400);
     });

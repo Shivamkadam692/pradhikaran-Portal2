@@ -3,12 +3,8 @@
  * Used in: Department registration form, Pradhikaran create-question form.
  */
 export const DEPARTMENT_OPTIONS = [
-  'Computer Science',
-  'Physical Science',
-  'Chemical Science',
-  'Mathematics and Statistics',
-  'Pharmacy',
-  'Language',
+  'Affiliation dept',
+  'Dean Department',
   'VC Office',
   'PVC Office',
   'Exam Department',

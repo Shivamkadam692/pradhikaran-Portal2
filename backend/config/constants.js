@@ -27,12 +27,21 @@ const REGISTRATION_STATUS = {
 
 /** Department options used in registration and question assignment (must match frontend) */
 const ALLOWED_DEPARTMENT_NAMES = [
-  'Computer Science',
-  'Physical Science',
-  'Chemical Science',
-  'Mathematics and Statistics',
-  'Pharmacy',
-  'Language',
+  'Affiliation dept',
+  'Dean Department',
+  'VC Office',
+  'PVC Office',
+  'Exam Department',
+  'Accounts Departments',
+  'NSS Department',
+  'Registrar Office',
+  'Student Development',
+  'Engineering Dept',
+  'Hingoli',
+  'Parbhani',
+  'Latur',
+  'Kinwat',
+  'Other',
 ];
 
 const ACTIVITY_ACTIONS = {

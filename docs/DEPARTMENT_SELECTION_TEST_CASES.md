@@ -10,13 +10,8 @@ Use this checklist to verify department dropdown behavior in both **Department r
 
 - [ ] **TC-DR-1** Dropdown is labeled **"Department"** with a visible required indicator (e.g. asterisk).
 - [ ] **TC-DR-2** Placeholder is “Select department” (or equivalent).
-- [ ] **TC-DR-3** All six options appear in the list:
-  - Computer Science  
-  - Physical Science  
-  - Chemical Science  
-  - Mathematics and Statistics  
-  - Pharmacy  
-  - Language  
+  - Affiliation dept
+  - Dean Department
 
 ### 1.2 Validation and errors
 
@@ -29,12 +24,8 @@ Use this checklist to verify department dropdown behavior in both **Department r
 
 Submit the registration form once per option and confirm the stored `departmentName`:
 
-- [ ] **TC-DR-8** Computer Science
-- [ ] **TC-DR-9** Physical Science
-- [ ] **TC-DR-10** Chemical Science
-- [ ] **TC-DR-11** Mathematics and Statistics
-- [ ] **TC-DR-12** Pharmacy
-- [ ] **TC-DR-13** Language
+- [ ] **TC-DR-8** Affiliation dept
+- [ ] **TC-DR-9** Dean Department
 
 ### 1.4 Accessibility and responsiveness
 
@@ -49,7 +40,7 @@ Submit the registration form once per option and confirm the stored `departmentN
 ### 2.1 Dropdown content and layout
 
 - [ ] **TC-PQ-1** Dropdown is present in the “New Question” / create form and labeled (e.g. “Assign to Department”).
-- [ ] **TC-PQ-2** Same six department options as in registration (Computer Science through Language).
+- [ ] **TC-PQ-2** Department options as defined in constants (Affiliation dept, Dean Department, etc.).
 - [ ] **TC-PQ-3** Department field is positioned clearly (e.g. after Title and Description, before Deadline).
 
 ### 2.2 Validation and assignment
@@ -63,12 +54,8 @@ Submit the registration form once per option and confirm the stored `departmentN
 
 For each department that has an approved department user, create a question and verify:
 
-- [ ] **TC-PQ-8** Computer Science
-- [ ] **TC-PQ-9** Physical Science
-- [ ] **TC-PQ-10** Chemical Science
-- [ ] **TC-PQ-11** Mathematics and Statistics
-- [ ] **TC-PQ-12** Pharmacy
-- [ ] **TC-PQ-13** Language
+- [ ] **TC-PQ-8** Affiliation dept
+- [ ] **TC-PQ-9** Dean Department
 
 ### 2.4 Data and consistency
 
@@ -94,10 +81,10 @@ For each department that has an approved department user, create a question and 
 ## 4. Backend automated tests
 
 - [ ] **TC-BE-1** Run `backend/__tests__/auth.test.js`: all tests pass, including:
-  - Register with valid department (e.g. Computer Science).
+  - Register with valid department (e.g. Affiliation dept).
   - Reject when department is missing.
   - Reject when department is empty/whitespace.
-  - Reject when department is not in the allowed list (e.g. “Engineering”).
+  - Reject when department is not in the allowed list (e.g. “InvalidDept”).
 
 ---
 

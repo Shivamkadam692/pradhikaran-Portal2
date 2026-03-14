@@ -9,6 +9,7 @@ export default function SuperAdminDashboard() {
   const [pradhikaran, setPradhikaran] = useState([]);
   const [senate, setSenate] = useState([]);
   const [questions, setQuestions] = useState([]);
+  const [departments, setDepartments] = useState([]);
   const [auditors, setAuditors] = useState([]);
   const [createAuditorOpen, setCreateAuditorOpen] = useState(false);
   const [auditorForm, setAuditorForm] = useState({ name: '', email: '', password: '' });
@@ -23,19 +24,21 @@ export default function SuperAdminDashboard() {
 
   const load = async () => {
     try {
-      const [aRes, prRes, sRes, qRes, lRes, auRes] = await Promise.all([
+      const [aRes, prRes, sRes, qRes, lRes, auRes, dRes] = await Promise.all([
         superAdminApi.get('/analytics').catch(() => ({ success: true, data: {} })),
         superAdminApi.get('/users/pradhikaran').catch(() => ({ success: true, data: [] })),
         superAdminApi.get('/users/senate').catch(() => ({ success: true, data: [] })),
         superAdminApi.get('/questions/all').catch(() => ({ success: true, data: [] })),
         superAdminApi.get('/activity-logs?limit=30').catch(() => ({ success: true, data: { logs: [] } })),
         superAdminApi.get('/users/auditor').catch(() => ({ success: true, data: [] })),
+        superAdminApi.get('/users/departments').catch(() => ({ success: true, data: [] })),
       ]);
       setAnalytics(aRes?.data || {});
       setPradhikaran(Array.isArray(prRes?.data) ? prRes.data : []);
       setSenate(Array.isArray(sRes?.data) ? sRes.data : []);
       setQuestions(Array.isArray(qRes?.data) ? qRes.data : []);
       setAuditors(Array.isArray(auRes?.data) ? auRes.data : []);
+      setDepartments(Array.isArray(dRes?.data) ? dRes.data : []);
       setLogs(Array.isArray(lRes?.data?.logs) ? lRes.data.logs : []);
     } catch (e) {
       setError(e.response?.data?.message || 'Failed to load');
@@ -91,6 +94,20 @@ export default function SuperAdminDashboard() {
       load();
     } catch (e) {
       setError(e.response?.data?.message || 'Failed');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDeleteDepartment = async (userId, name) => {
+    if (!window.confirm(`Are you sure you want to delete department account "${name}"? This action cannot be undone.`)) return;
+    setSubmitting(true);
+    setError('');
+    try {
+      await superAdminApi.delete(`/users/departments/${userId}`);
+      load();
+    } catch (e) {
+      setError(e.response?.data?.message || 'Failed to delete department');
     } finally {
       setSubmitting(false);
     }
@@ -253,6 +270,31 @@ export default function SuperAdminDashboard() {
             <li key={u._id}>{u.name} – {u.email}</li>
           ))}
         </ul>
+      </div>
+
+      <div className="glass p-4 mb-4">
+        <div className="section-header">
+          <h3>Department Accounts</h3>
+        </div>
+        {departments.length === 0 ? (
+          <p className="text-muted">No department accounts found.</p>
+        ) : (
+          <ul className="list-unstyled">
+            {departments.map((u) => (
+              <li key={u._id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                <span>{u.name} – {u.email} {u.departmentName ? `(${u.departmentName})` : ''} {u.isApproved ? '✅' : '⏳'}</span>
+                <button
+                  type="button"
+                  className="btn btn-danger small"
+                  disabled={submitting}
+                  onClick={() => handleDeleteDepartment(u._id, u.name)}
+                >
+                  Delete
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <div className="glass p-4 mb-4">

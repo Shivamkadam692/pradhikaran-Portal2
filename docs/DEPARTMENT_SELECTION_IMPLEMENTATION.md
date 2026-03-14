@@ -12,12 +12,9 @@ This document describes the department dropdown implementation used in the **Dep
 
 The following departments are available in the dropdown (same list in both places):
 
-- Computer Science
-- Physical Science
-- Chemical Science
-- Mathematics and Statistics
-- Pharmacy
-- Language
+- Affiliation dept
+- Dean Department
+- ... (see constants for full list)
 
 **Frontend constant:** `frontend/src/constants/departments.js` — `DEPARTMENT_OPTIONS`  
 **Backend constant:** `backend/config/constants.js` — `ALLOWED_DEPARTMENT_NAMES`
@@ -85,7 +82,7 @@ Keep these two lists in sync when adding or changing departments.
 ## Testing
 
 - **Backend:** `backend/__tests__/auth.test.js` includes:
-  - Successful registration with valid department (e.g. Computer Science).
+  - Successful registration with valid department (e.g. Affiliation dept).
   - 400 when department is missing, empty, or not in the allowed list.
 - **Manual / E2E:** See `docs/DEPARTMENT_SELECTION_TEST_CASES.md` for a checklist covering both roles, all options, and edge cases.
 

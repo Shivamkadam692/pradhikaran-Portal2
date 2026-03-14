@@ -38,6 +38,8 @@ router.post('/users/:userId/approve', userController.approveDepartment);
 router.get('/questions/all', questionController.listAll);
 router.get('/analytics', analyticsController.getDashboard);
 router.get('/activity-logs', activityLogController.list);
+router.get('/users/departments', userController.listDepartments);
+router.delete('/users/departments/:userId', userController.deleteDepartment);
 router.get('/export/question/:id', exportController.exportQuestion);
 router.get('/export/department/:userId', exportController.exportDepartment);
 

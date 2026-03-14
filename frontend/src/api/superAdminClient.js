@@ -26,5 +26,6 @@ export function useSuperAdminApi() {
   return {
     get: (path) => client.get(`${base}${path}`).then((r) => r.data),
     post: (path, body) => client.post(`${base}${path}`, body).then((r) => r.data),
+    delete: (path) => client.delete(`${base}${path}`).then((r) => r.data),
   };
 }
