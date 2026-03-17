@@ -5,7 +5,7 @@ A production-ready MERN stack application for **research governance and collabor
 ## Features
 
 - **Role-based access**: Super Admin (hidden URL), Pradhikaran, Department
-- **Department selection**: Dynamic department dropdown. Users can select "Other" during registration to define custom departments. Once approved, these custom departments become available in the dropdown for future registrations and for assigning questions by Pradhikaran.
+- **Department selection**: Dynamic department dropdown. Users can select "Other" during registration to define custom departments and sub-departments. Once approved, these dynamically update across the portal.
 - **Strict workflow**: Question states (open → locked → finalized), Answer states (pending_review, update_requested, accepted, rejected)
 - **Final decision authority**: Pradhikaran can merge accepted answers into an official final answer and finalize
 - **Permissions (Pradhikaran)**: Dedicated **Permissions** section to view pending department registrations, **approve** or **reject** with mandatory reason; audit logging and real-time notifications to departments (approval/rejection)
@@ -14,12 +14,16 @@ A production-ready MERN stack application for **research governance and collabor
 - **Real-time updates**: Socket.io for answer status, finalization, registration approval/rejection, question lock
 - **Secure auth**: JWT access (15m) + refresh (7d) in HTTP-only cookie, bcrypt, rate limiting, Helmet, CORS
 - **Glassmorphism UI**: Blue → purple → navy gradient theme, blur cards, smooth transitions
-- **PDF export**: Question and department reports (PDFKit)
+- **PDF export**: Comprehensive R1, R2, R3, and R4 reports (PDFKit) grouped by Senate Members in formal table layouts
 - **Cron**: Auto-lock questions when deadline passes
+- **Time Windows**: Pradhikaran can set specific active time windows for asking questions and submitting answers
 - **Analytics**: Aggregation pipeline metrics for dashboards
 
 ## Recent Changes
 
+- **Time Windows**: Pradhikaran can now manage specific time windows for questioning and answering, strictly enforcing deadlines across the platform.
+- **Advanced Reports Structure (R1-R4)**: Reports now group questions by the evaluating Senate Member and display them in comprehensive formal tables.
+- **Sub-Departments**: Added granular tracking of sub-department names under custom department registrations.
 - **Dynamic Custom Departments**: Added support for custom department registration. Users selecting "Other" can specify new departments. Upon approval, these dynamically populate the registration and assignment dropdowns across the portal.
 - Marathi (Devanagari) Unicode rendering in PDF exports via PDFKit. System font detection for Nirmala UI/Mangal (Windows) and Noto/Lohit (Linux/macOS). For consistent results, bundle a Devanagari TTF (e.g., NotoSansDevanagari-Regular.ttf) and point PDFKit to it.
 - Removed manual "Lock Question" button from Pradhikaran UI. Auto-lock via cron continues based on deadlines.
@@ -97,6 +101,8 @@ VITE_API_ORIGIN=http://localhost:5000
 - **Questions:** `GET/POST /api/questions`, `GET/PUT/DELETE /api/questions/:id`, `POST /api/questions/:id/lock`, `GET /api/questions/:id/answers`, `POST /api/questions/:id/finalize`
 - **Answers:** `POST /api/answers`, `GET /api/answers/question/:questionId`, `PUT /api/answers/:id`, `POST /api/answers/:id/status`
 - **Answers (Pradhikaran):** `GET /api/answers/department/:departmentId` — list answers for a department (includes populated question summary)
+- **Time Windows:** `GET /api/time-windows`, `POST/PUT/DELETE /api/time-windows/:id` (Pradhikaran)
+- **Reports:** `GET /api/reports`, `GET /api/reports/:id/download` (Pradhikaran)
 - **Analytics:** `GET /api/analytics`
 - **Activity logs:** `GET /api/activity-logs` (Super Admin), `GET /api/activity-logs/mine` (Pradhikaran, Department; query: page, limit, keyword, dateFrom, dateTo, action, status), `GET /api/activity-logs/mine/export?format=csv|json`
 - **Export:** `GET /api/export/question/:id`, `GET /api/export/department/:userId`
