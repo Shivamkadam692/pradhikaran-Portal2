@@ -44,7 +44,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Serve static files from uploads directory
+// Serve static files from uploads
 app.use('/uploads', express.static('uploads'));
 
 const isDev = process.env.NODE_ENV !== 'production';
