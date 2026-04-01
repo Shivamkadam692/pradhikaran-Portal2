@@ -128,6 +128,8 @@ If PowerShell blocks `npm` scripts (Execution Policy), run:
 node ./node_modules/jest/bin/jest.js --coverage --forceExit
 ```
 
+in future updates may add
+
 ## License
 
 MIT
